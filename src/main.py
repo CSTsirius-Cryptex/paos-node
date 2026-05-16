@@ -18,7 +18,13 @@ async def lifespan(app: FastAPI):
     await register_node()
     yield
 
-app = FastAPI(title="PAOS Node", lifespan=lifespan)
+import os
+_central = os.getenv("CENTRAL_URL", "https://paos-central-production.up.railway.app")
+app = FastAPI(
+    title="PAOS Node",
+    servers=[{"url": f"{_central}/node", "description": "PAOS Central proxy"}],
+    lifespan=lifespan,
+)
 
 app.include_router(health.router)
 app.include_router(memory.router)
