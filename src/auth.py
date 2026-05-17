@@ -6,8 +6,8 @@ from src.keys import get_cached_public_key
 
 def require_auth(
     request: Request,
-    x_api_key: Optional[str] = Header(None),
-    authorization: Optional[str] = Header(None),
+    x_api_key: Optional[str] = Header(None, include_in_schema=False),
+    authorization: Optional[str] = Header(None, include_in_schema=False),
 ):
     """Accept either X-API-Key (owner/local) or Bearer JWT (OAuth client)."""
 
