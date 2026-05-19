@@ -1,0 +1,314 @@
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T03:13:04Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T03:13:04Z INF Requesting new quick Tunnel on trycloudflare.com...
+[cloudflared] 2026-05-17T03:13:08Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T03:13:08Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[cloudflared] 2026-05-17T03:13:08Z INF |  https://screens-tall-dogs-kingston.trycloudflare.com                                      |
+[cloudflared] 2026-05-17T03:13:08Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T03:13:08Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[cloudflared] 2026-05-17T03:13:08Z INF Version 2025.8.1 (Checksum b5d598b00cc3a28cabc5812d9f762819334614bae452db4e7f23eefe7b081556)
+[cloudflared] 2026-05-17T03:13:08Z INF GOOS: windows, GOVersion: go1.24.2, GoArch: amd64
+[cloudflared] 2026-05-17T03:13:08Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3100]
+[cloudflared] 2026-05-17T03:13:08Z INF cloudflared will not automatically update on Windows systems.
+[cloudflared] 2026-05-17T03:13:08Z INF Generated Connector ID: 802419c8-eb44-47a0-aff8-adb3a6ba0d31
+[cloudflared] 2026-05-17T03:13:08Z INF Initial protocol quic
+[cloudflared] 2026-05-17T03:13:08Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T03:13:08Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T03:13:08Z ERR Cannot determine default origin certificate path. No file cert.pem in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]. You need to specify the origin certificate path by specifying the origincert option in the configuration file, or set TUNNEL_ORIGIN_CERT environment variable originCertPath=
+[cloudflared] 2026-05-17T03:13:08Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[cloudflared] 2026-05-17T03:13:08Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T03:13:08Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.200.113
+[cloudflared] 2026-05-17T03:13:08Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T03:13:08Z INF Starting metrics server on 127.0.0.1:20241/metrics
+[cloudflared] 2026-05-17T03:13:08Z INF Registered tunnel connection connIndex=0 connection=1e0b934d-bdb4-4cd8-8e1a-0ce1e23f8cf2 event=0 ip=198.41.200.113 location=tpe01 protocol=quic
+[start] Tunnel URL：https://screens-tall-dogs-kingston.trycloudflare.com
+[start] .env 已更新：NODE_PUBLIC_URL=https://screens-tall-dogs-kingston.trycloudflare.com
+[start] 啟動 PAOS Node on port 3100
+INFO:     Started server process [89908]
+INFO:     Waiting for application startup.
+[Central] Node 已登錄：https://screens-tall-dogs-kingston.trycloudflare.com
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3100 (Press CTRL+C to quit)
+INFO:     127.0.0.1:52862 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52966 - "GET /openapi.json HTTP/1.1" 200 OK
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T07:58:28Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T07:58:28Z INF Requesting new quick Tunnel on trycloudflare.com...
+[cloudflared] 2026-05-17T07:58:33Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T07:58:33Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[cloudflared] 2026-05-17T07:58:33Z INF |  https://search-prove-knight-jurisdiction.trycloudflare.com                                |
+[cloudflared] 2026-05-17T07:58:33Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T07:58:33Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[cloudflared] 2026-05-17T07:58:33Z INF Version 2025.8.1 (Checksum b5d598b00cc3a28cabc5812d9f762819334614bae452db4e7f23eefe7b081556)
+[cloudflared] 2026-05-17T07:58:33Z INF GOOS: windows, GOVersion: go1.24.2, GoArch: amd64
+[cloudflared] 2026-05-17T07:58:33Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3100]
+[cloudflared] 2026-05-17T07:58:33Z INF cloudflared will not automatically update on Windows systems.
+[cloudflared] 2026-05-17T07:58:33Z INF Generated Connector ID: 47ba3d58-4846-4869-977e-ef49d4f13a72
+[cloudflared] 2026-05-17T07:58:33Z INF Initial protocol quic
+[cloudflared] 2026-05-17T07:58:33Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T07:58:33Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T07:58:33Z ERR Cannot determine default origin certificate path. No file cert.pem in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]. You need to specify the origin certificate path by specifying the origincert option in the configuration file, or set TUNNEL_ORIGIN_CERT environment variable originCertPath=
+[cloudflared] 2026-05-17T07:58:33Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[cloudflared] 2026-05-17T07:58:33Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T07:58:33Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.200.73
+[cloudflared] 2026-05-17T07:58:33Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T07:58:33Z INF Starting metrics server on 127.0.0.1:20242/metrics
+[start] Tunnel URL：https://search-prove-knight-jurisdiction.trycloudflare.com
+[start] .env 已更新：NODE_PUBLIC_URL=https://search-prove-knight-jurisdiction.trycloudflare.com
+[cloudflared] 2026-05-17T07:58:33Z INF Registered tunnel connection connIndex=0 connection=76d20edd-3bc9-45f7-8712-a2e8e47f6a3b event=0 ip=198.41.200.73 location=tpe01 protocol=quic
+[start] 啟動 PAOS Node on port 3100
+INFO:     Started server process [70040]
+INFO:     Waiting for application startup.
+[Central] Node 已登錄：https://search-prove-knight-jurisdiction.trycloudflare.com
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3100 (Press CTRL+C to quit)
+INFO:     127.0.0.1:53055 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53128 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53142 - "GET /projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53391 - "GET /projects HTTP/1.1" 200 OK
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T08:01:33Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T08:01:33Z INF Requesting new quick Tunnel on trycloudflare.com...
+[cloudflared] 2026-05-17T08:01:37Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:01:37Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[cloudflared] 2026-05-17T08:01:37Z INF |  https://conversations-below-bench-cognitive.trycloudflare.com                             |
+[cloudflared] 2026-05-17T08:01:37Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:01:37Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[cloudflared] 2026-05-17T08:01:37Z INF Version 2025.8.1 (Checksum b5d598b00cc3a28cabc5812d9f762819334614bae452db4e7f23eefe7b081556)
+[cloudflared] 2026-05-17T08:01:37Z INF GOOS: windows, GOVersion: go1.24.2, GoArch: amd64
+[cloudflared] 2026-05-17T08:01:37Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3100]
+[cloudflared] 2026-05-17T08:01:37Z INF cloudflared will not automatically update on Windows systems.
+[cloudflared] 2026-05-17T08:01:37Z INF Generated Connector ID: 10878ff0-fc84-426e-b3ed-93b5e971a942
+[cloudflared] 2026-05-17T08:01:37Z INF Initial protocol quic
+[cloudflared] 2026-05-17T08:01:37Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:01:37Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:01:37Z ERR Cannot determine default origin certificate path. No file cert.pem in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]. You need to specify the origin certificate path by specifying the origincert option in the configuration file, or set TUNNEL_ORIGIN_CERT environment variable originCertPath=
+[cloudflared] 2026-05-17T08:01:37Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[cloudflared] 2026-05-17T08:01:37Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:01:37Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.200.73
+[cloudflared] 2026-05-17T08:01:37Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:01:37Z INF Starting metrics server on 127.0.0.1:20243/metrics
+[start] Tunnel URL：https://conversations-below-bench-cognitive.trycloudflare.com
+[start] .env 已更新：NODE_PUBLIC_URL=https://conversations-below-bench-cognitive.trycloudflare.com
+[start] 啟動 PAOS Node on port 3100
+[cloudflared] 2026-05-17T08:01:37Z INF Registered tunnel connection connIndex=0 connection=908ed52f-dddc-48e1-a6c0-8684188c8d13 event=0 ip=198.41.200.73 location=tpe01 protocol=quic
+INFO:     Started server process [98100]
+INFO:     Waiting for application startup.
+[Central] Node 已登錄：https://conversations-below-bench-cognitive.trycloudflare.com
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3100 (Press CTRL+C to quit)
+INFO:     127.0.0.1:53463 - "GET /projects HTTP/1.1" 200 OK
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T08:02:32Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T08:02:32Z INF Requesting new quick Tunnel on trycloudflare.com...
+[cloudflared] 2026-05-17T08:02:36Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:02:36Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[cloudflared] 2026-05-17T08:02:36Z INF |  https://drinking-children-farmers-publishers.trycloudflare.com                            |
+[cloudflared] 2026-05-17T08:02:36Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:02:36Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[cloudflared] 2026-05-17T08:02:36Z INF Version 2025.8.1 (Checksum b5d598b00cc3a28cabc5812d9f762819334614bae452db4e7f23eefe7b081556)
+[cloudflared] 2026-05-17T08:02:36Z INF GOOS: windows, GOVersion: go1.24.2, GoArch: amd64
+[cloudflared] 2026-05-17T08:02:36Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3100]
+[cloudflared] 2026-05-17T08:02:36Z INF cloudflared will not automatically update on Windows systems.
+[cloudflared] 2026-05-17T08:02:36Z INF Generated Connector ID: a72b91d1-b04c-453c-85c5-223e64df58eb
+[cloudflared] 2026-05-17T08:02:36Z INF Initial protocol quic
+[cloudflared] 2026-05-17T08:02:36Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:02:36Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:02:36Z ERR Cannot determine default origin certificate path. No file cert.pem in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]. You need to specify the origin certificate path by specifying the origincert option in the configuration file, or set TUNNEL_ORIGIN_CERT environment variable originCertPath=
+[cloudflared] 2026-05-17T08:02:36Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[cloudflared] 2026-05-17T08:02:36Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:02:36Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.192.27
+[cloudflared] 2026-05-17T08:02:36Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:02:36Z INF Starting metrics server on 127.0.0.1:20244/metrics
+[start] Tunnel URL：https://drinking-children-farmers-publishers.trycloudflare.com
+[start] .env 已更新：NODE_PUBLIC_URL=https://drinking-children-farmers-publishers.trycloudflare.com
+[start] 啟動 PAOS Node on port 3100
+[cloudflared] 2026-05-17T08:02:37Z INF Registered tunnel connection connIndex=0 connection=3723a216-4d26-4a48-8044-73347aec117f event=0 ip=198.41.192.27 location=khh01 protocol=quic
+INFO:     Started server process [23600]
+INFO:     Waiting for application startup.
+[Central] Node 已登錄：https://drinking-children-farmers-publishers.trycloudflare.com
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3100 (Press CTRL+C to quit)
+INFO:     127.0.0.1:53561 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53692 - "GET /projects HTTP/1.1" 200 OK
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T08:07:27Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T08:07:27Z INF Requesting new quick Tunnel on trycloudflare.com...
+[start] 錯誤：等待 cloudflared URL 超時，請確認 cloudflared 已安裝且網路正常
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T08:12:17Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T08:12:17Z INF Requesting new quick Tunnel on trycloudflare.com...
+[cloudflared] 2026-05-17T08:12:21Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:12:21Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[cloudflared] 2026-05-17T08:12:21Z INF |  https://bradford-girls-sea-critics.trycloudflare.com                                      |
+[cloudflared] 2026-05-17T08:12:21Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:12:21Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[cloudflared] 2026-05-17T08:12:21Z INF Version 2025.8.1 (Checksum b5d598b00cc3a28cabc5812d9f762819334614bae452db4e7f23eefe7b081556)
+[cloudflared] 2026-05-17T08:12:21Z INF GOOS: windows, GOVersion: go1.24.2, GoArch: amd64
+[cloudflared] 2026-05-17T08:12:21Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3100]
+[cloudflared] 2026-05-17T08:12:21Z INF cloudflared will not automatically update on Windows systems.
+[cloudflared] 2026-05-17T08:12:21Z INF Generated Connector ID: 5083f2ad-aa46-4e06-bfee-8f7498d45c4e
+[cloudflared] 2026-05-17T08:12:21Z INF Initial protocol quic
+[cloudflared] 2026-05-17T08:12:21Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:12:21Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:12:21Z ERR Cannot determine default origin certificate path. No file cert.pem in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]. You need to specify the origin certificate path by specifying the origincert option in the configuration file, or set TUNNEL_ORIGIN_CERT environment variable originCertPath=
+[cloudflared] 2026-05-17T08:12:21Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[cloudflared] 2026-05-17T08:12:21Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:12:21Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.192.57
+[cloudflared] 2026-05-17T08:12:21Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:12:21Z INF Starting metrics server on 127.0.0.1:20241/metrics
+[start] Tunnel URL：https://bradford-girls-sea-critics.trycloudflare.com
+[start] .env 已更新：NODE_PUBLIC_URL=https://bradford-girls-sea-critics.trycloudflare.com
+[cloudflared] 2026-05-17T08:12:22Z INF Registered tunnel connection connIndex=0 connection=bebd3822-1749-4e4a-b7a8-5e0e4a751b91 event=0 ip=198.41.192.57 location=khh01 protocol=quic
+[start] 啟動 PAOS Node on port 3100
+INFO:     Started server process [30452]
+INFO:     Waiting for application startup.
+[Central] Node 已登錄：https://bradford-girls-sea-critics.trycloudflare.com
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3100 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51423 - "GET /health HTTP/1.1" 200 OK
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T08:12:30Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T08:12:30Z INF Requesting new quick Tunnel on trycloudflare.com...
+[cloudflared] 2026-05-17T08:12:35Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:12:35Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[cloudflared] 2026-05-17T08:12:35Z INF |  https://ent-lance-rick-casey.trycloudflare.com                                            |
+[cloudflared] 2026-05-17T08:12:35Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:12:35Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[cloudflared] 2026-05-17T08:12:35Z INF Version 2025.8.1 (Checksum b5d598b00cc3a28cabc5812d9f762819334614bae452db4e7f23eefe7b081556)
+[cloudflared] 2026-05-17T08:12:35Z INF GOOS: windows, GOVersion: go1.24.2, GoArch: amd64
+[cloudflared] 2026-05-17T08:12:35Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3100]
+[cloudflared] 2026-05-17T08:12:35Z INF cloudflared will not automatically update on Windows systems.
+[cloudflared] 2026-05-17T08:12:35Z INF Generated Connector ID: 913e691d-7cf7-4b3e-a7fa-fe30306b598b
+[cloudflared] 2026-05-17T08:12:35Z INF Initial protocol quic
+[cloudflared] 2026-05-17T08:12:35Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:12:35Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:12:35Z ERR Cannot determine default origin certificate path. No file cert.pem in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]. You need to specify the origin certificate path by specifying the origincert option in the configuration file, or set TUNNEL_ORIGIN_CERT environment variable originCertPath=
+[cloudflared] 2026-05-17T08:12:35Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[cloudflared] 2026-05-17T08:12:35Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:12:35Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.192.77
+[cloudflared] 2026-05-17T08:12:35Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:12:35Z INF Starting metrics server on 127.0.0.1:20242/metrics
+[start] Tunnel URL：https://ent-lance-rick-casey.trycloudflare.com
+[start] .env 已更新：NODE_PUBLIC_URL=https://ent-lance-rick-casey.trycloudflare.com
+[start] 啟動 PAOS Node on port 3100
+[cloudflared] 2026-05-17T08:12:35Z INF Registered tunnel connection connIndex=0 connection=8b164a75-563f-4393-8f5d-99a57adf0ed1 event=0 ip=198.41.192.77 location=khh01 protocol=quic
+INFO:     Started server process [30180]
+INFO:     Waiting for application startup.
+[Central] Node 已登錄：https://ent-lance-rick-casey.trycloudflare.com
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3100 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51449 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51449 - "GET /health HTTP/1.1" 200 OK
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T08:12:44Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T08:12:44Z INF Requesting new quick Tunnel on trycloudflare.com...
+[cloudflared] 2026-05-17T08:12:47Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:12:47Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[cloudflared] 2026-05-17T08:12:47Z INF |  https://landscapes-restaurants-conceptual-williams.trycloudflare.com                      |
+[cloudflared] 2026-05-17T08:12:47Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:12:47Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[cloudflared] 2026-05-17T08:12:47Z INF Version 2025.8.1 (Checksum b5d598b00cc3a28cabc5812d9f762819334614bae452db4e7f23eefe7b081556)
+[cloudflared] 2026-05-17T08:12:47Z INF GOOS: windows, GOVersion: go1.24.2, GoArch: amd64
+[cloudflared] 2026-05-17T08:12:47Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3100]
+[cloudflared] 2026-05-17T08:12:47Z INF cloudflared will not automatically update on Windows systems.
+[cloudflared] 2026-05-17T08:12:47Z INF Generated Connector ID: e50ea27a-c8a2-4b38-8ce9-b73608e794de
+[cloudflared] 2026-05-17T08:12:47Z INF Initial protocol quic
+[cloudflared] 2026-05-17T08:12:47Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:12:47Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:12:47Z ERR Cannot determine default origin certificate path. No file cert.pem in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]. You need to specify the origin certificate path by specifying the origincert option in the configuration file, or set TUNNEL_ORIGIN_CERT environment variable originCertPath=
+[cloudflared] 2026-05-17T08:12:47Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[cloudflared] 2026-05-17T08:12:47Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:12:47Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.200.233
+[cloudflared] 2026-05-17T08:12:47Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:12:47Z INF Starting metrics server on 127.0.0.1:20243/metrics
+[start] Tunnel URL：https://landscapes-restaurants-conceptual-williams.trycloudflare.com
+[start] .env 已更新：NODE_PUBLIC_URL=https://landscapes-restaurants-conceptual-williams.trycloudflare.com
+[start] 啟動 PAOS Node on port 3100
+INFO:     Started server process [26140]
+INFO:     Waiting for application startup.
+[cloudflared] 2026-05-17T08:12:48Z INF Registered tunnel connection connIndex=0 connection=9360053e-1987-4c48-a0ca-f863331e9032 event=0 ip=198.41.200.233 location=tpe01 protocol=quic
+[Central] Node 已登錄：https://landscapes-restaurants-conceptual-williams.trycloudflare.com
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3100 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51468 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51468 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51483 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51483 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51497 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51501 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51501 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     100.96.126.61:0 - "GET /openapi.yaml HTTP/1.1" 404 Not Found
+INFO:     100.96.126.61:0 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+[start] 等待網路就緒（最多 60 秒）...
+[start] 網路就緒（第 1 次嘗試）
+[start] 啟動 cloudflared tunnel → http://localhost:3100
+[cloudflared] 2026-05-17T08:20:43Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[cloudflared] 2026-05-17T08:20:43Z INF Requesting new quick Tunnel on trycloudflare.com...
+[cloudflared] 2026-05-17T08:20:47Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:20:47Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[cloudflared] 2026-05-17T08:20:47Z INF |  https://dependent-transcript-protect-yeast.trycloudflare.com                              |
+[cloudflared] 2026-05-17T08:20:47Z INF +--------------------------------------------------------------------------------------------+
+[cloudflared] 2026-05-17T08:20:47Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[cloudflared] 2026-05-17T08:20:47Z INF Version 2025.8.1 (Checksum b5d598b00cc3a28cabc5812d9f762819334614bae452db4e7f23eefe7b081556)
+[cloudflared] 2026-05-17T08:20:47Z INF GOOS: windows, GOVersion: go1.24.2, GoArch: amd64
+[cloudflared] 2026-05-17T08:20:47Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3100]
+[cloudflared] 2026-05-17T08:20:47Z INF Generated Connector ID: 995c21b1-e8b4-4cf4-9565-a58ff2b9b97e
+[cloudflared] 2026-05-17T08:20:47Z INF cloudflared will not automatically update on Windows systems.
+[cloudflared] 2026-05-17T08:20:47Z INF Initial protocol quic
+[cloudflared] 2026-05-17T08:20:47Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:20:47Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[start] Tunnel URL：https://dependent-transcript-protect-yeast.trycloudflare.com
+[cloudflared] 2026-05-17T08:20:47Z ERR Cannot determine default origin certificate path. No file cert.pem in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]. You need to specify the origin certificate path by specifying the origincert option in the configuration file, or set TUNNEL_ORIGIN_CERT environment variable originCertPath=
+[cloudflared] 2026-05-17T08:20:47Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[cloudflared] 2026-05-17T08:20:47Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.192.27
+[cloudflared] 2026-05-17T08:20:47Z INF ICMP proxy will use 192.168.0.101 as source for IPv4
+[cloudflared] 2026-05-17T08:20:47Z INF ICMP proxy will use fe80::5bba:e6e2:effa:124 in zone Wi-Fi as source for IPv6
+[cloudflared] 2026-05-17T08:20:47Z INF Starting metrics server on 127.0.0.1:20241/metrics
+[cloudflared] 2026-05-17T08:20:48Z INF Registered tunnel connection connIndex=0 connection=6a097491-69d4-4d06-a3bd-02e2f17b7379 event=0 ip=198.41.192.27 location=khh01 protocol=quic
+[start] .env 已更新：NODE_PUBLIC_URL=https://dependent-transcript-protect-yeast.trycloudflare.com
+[start] 啟動 PAOS Node on port 3100
+INFO:     Started server process [20792]
+INFO:     Waiting for application startup.
+[Central] Node 已登錄：https://dependent-transcript-protect-yeast.trycloudflare.com
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:3100 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50356 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52565 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52565 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     162.220.232.39:0 - "GET /health HTTP/1.1" 200 OK
+INFO:     162.220.232.39:0 - "GET /notes?folder= HTTP/1.1" 200 OK
+INFO:     162.220.232.39:0 - "GET /health HTTP/1.1" 200 OK
+INFO:     162.220.232.39:0 - "GET /todos?limit=10 HTTP/1.1" 200 OK
+INFO:     162.220.232.39:0 - "GET /notes?folder= HTTP/1.1" 200 OK
+INFO:     162.220.232.39:0 - "GET /notes/agents/%E5%AE%87%E7%BF%94/memory/PAOS%E9%80%A3%E7%B7%9A%E6%B8%AC%E8%A9%A6%E5%A0%B1%E5%91%8A_2026-05-17.md HTTP/1.1" 200 OK
+INFO:     2a06:98c0:360b:aa8d:f8a1:5366:50ff:6e14:0 - "HEAD / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54145 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54175 - "GET /memory HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:54178 - "GET /handoffs HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:54184 - "GET /todos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:54293 - "GET /memory HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:54295 - "GET /handoffs?limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54297 - "GET /todos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54299 - "GET /notes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54301 - "GET /jobs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54307 - "GET /projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54309 - "GET /gpts HTTP/1.1" 502 Bad Gateway
+INFO:     127.0.0.1:54435 - "GET /memory HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:54437 - "OPTIONS /memory HTTP/1.1" 405 Method Not Allowed
+INFO:     114.41.181.127:0 - "GET /health HTTP/1.1" 200 OK
+INFO:     13.56.244.124:0 - "GET /health HTTP/1.1" 200 OK
+INFO:     13.56.244.124:0 - "GET /todos HTTP/1.1" 401 Unauthorized
+INFO:     13.56.244.124:0 - "GET /projects HTTP/1.1" 401 Unauthorized
+INFO:     13.56.244.124:0 - "GET /handoffs HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56499 - "POST /memory HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:56505 - "POST /todos HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:56507 - "POST /notes/append HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:56750 - "POST /todos HTTP/1.1" 201 Created
+INFO:     127.0.0.1:56756 - "POST /memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56813 - "PUT /notes/PAOS/3j-test.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56819 - "GET /notes/PAOS/3j-test.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56821 - "POST /notes/PAOS/3j-test.md/append HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56828 - "POST /files/upload HTTP/1.1" 201 Created
+INFO:     127.0.0.1:56841 - "DELETE /todos/todo-0002 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56886 - "PUT /notes/PAOS/3j-test.md HTTP/1.1" 200 OK

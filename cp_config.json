@@ -1,0 +1,4 @@
+{
+  "refresh_interval_seconds": 30,
+  "attachment_default_path": "PAOS/attachments"
+}
