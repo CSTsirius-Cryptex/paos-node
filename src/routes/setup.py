@@ -23,18 +23,24 @@ router = APIRouter(dependencies=[Depends(require_auth)])
 
 # ── 標準資料夾模板 ────────────────────────────────────────────────────
 
+# ── v3.7 對齊的資料夾結構 ──────────────────────────────────────────
+
 AGENT_FOLDERS = [
-    "agents/{agent}/perspectives",
-    "agents/{agent}/decisions",
-    "agents/{agent}/insights",
-    "PAOS/workflow/{agent}",
+    # work_log 日誌目錄
+    "agents/{agent}/memory/work-log",
+    # 專案記憶目錄
+    "agents/{agent}/memory/projects",
+    # 洞察目錄
+    "agents/{agent}/memory/insights",
 ]
 
 SHARED_FOLDERS = [
+    "shared/projects",
     "shared/knowledge",
     "shared/contacts",
-    "PAOS/projects",
 ]
+
+# ── 初始檔案範本 ────────────────────────────────────────────────────
 
 PROFILE_TEMPLATE = """\
 ---
@@ -46,22 +52,29 @@ status: fresh
 # {agent} 的記憶空間
 
 這個記憶空間剛剛建立，尚無歷史記憶。
-第一次對話完成後，請更新本檔案的 `status` 為 `active`，
-並在下方記錄用戶的基本背景資訊。
-
-## 用戶基本資訊
-
-（首次對話後填寫）
-
-## 偏好與習慣
-
-（累積幾次對話後填寫）
+第一次對話完成後，`status` 會自動更新為 `active`。
 """
 
-WORKFLOW_TEMPLATE = """\
-# {agent} 工作日誌
+INDEX_TEMPLATE = """\
+# {agent} 知識索引
+最後更新：{date}
 
----
+## 專案
+
+## 洞察
+
+## 共用知識（我貢獻的）
+
+## 重要聯絡人
+"""
+
+LOG_TEMPLATE = """\
+# {agent} 操作日誌
+
+<!-- append-only，永不刪除條目 -->
+<!-- 格式：## [YYYY-MM-DD] {{操作類型}} | {{說明}} [[相關頁面路徑]] -->
+<!-- 操作類型：ingest / query / decision / update / lint -->
+
 """
 
 
@@ -125,7 +138,7 @@ def init_agent_vault(agent_name: str, force: bool = False) -> dict:
         except Exception as e:
             skipped.append({"path": rel, "reason": str(e)})
 
-    # 3. profile.md（首次建立標記）
+    # 3. profile.md（首次建立標記，供 GET /setup/status 判斷 fresh/active）
     profile_path = vault / "agents" / agent_name / "profile.md"
     profile_content = PROFILE_TEMPLATE.format(agent=agent_name, date=date_str)
     if force:
@@ -138,18 +151,31 @@ def init_agent_vault(agent_name: str, force: bool = False) -> dict:
         else:
             skipped.append({"path": f"agents/{agent_name}/profile.md", "reason": "已存在，略過（force=False）"})
 
-    # 4. workflow-doc.md（同上）
-    wf_path = vault / "PAOS" / "workflow" / agent_name / "workflow-doc.md"
-    wf_content = WORKFLOW_TEMPLATE.format(agent=agent_name)
+    # 4. index.md（v3.7 知識索引導航檔）
+    index_path = vault / "agents" / agent_name / "index.md"
+    index_content = INDEX_TEMPLATE.format(agent=agent_name, date=date_str)
     if force:
-        _write_always(wf_path, wf_content)
-        created.append(f"PAOS/workflow/{agent_name}/workflow-doc.md")
+        _write_always(index_path, index_content)
+        created.append(f"agents/{agent_name}/index.md")
     else:
-        if not wf_path.exists():
-            _write_if_not_exists(wf_path, wf_content)
-            created.append(f"PAOS/workflow/{agent_name}/workflow-doc.md")
+        if not index_path.exists():
+            _write_if_not_exists(index_path, index_content)
+            created.append(f"agents/{agent_name}/index.md")
         else:
-            skipped.append({"path": f"PAOS/workflow/{agent_name}/workflow-doc.md", "reason": "已存在，略過"})
+            skipped.append({"path": f"agents/{agent_name}/index.md", "reason": "已存在，略過"})
+
+    # 5. log.md（v3.7 操作日誌，append-only）
+    log_path = vault / "agents" / agent_name / "log.md"
+    log_content = LOG_TEMPLATE.format(agent=agent_name)
+    if force:
+        _write_always(log_path, log_content)
+        created.append(f"agents/{agent_name}/log.md")
+    else:
+        if not log_path.exists():
+            _write_if_not_exists(log_path, log_content)
+            created.append(f"agents/{agent_name}/log.md")
+        else:
+            skipped.append({"path": f"agents/{agent_name}/log.md", "reason": "已存在，略過"})
 
     return {
         "ok": True,
