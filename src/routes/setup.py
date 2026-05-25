@@ -193,8 +193,9 @@ def api_init_agent(req: InitAgentRequest):
     為指定助理初始化 Vault 資料夾結構。
 
     - 冪等：重複呼叫安全，不會覆蓋已有筆記（除非 force=true）
-    - 建立：agents/{name}/{perspectives,decisions,insights}/、PAOS/workflow/{name}/、shared/
-    - 建立：agents/{name}/profile.md（首次使用標記）
+    - 建立：agents/{name}/memory/{work-log,projects,insights}/
+    - 建立：shared/{projects,knowledge,contacts}/
+    - 建立：agents/{name}/profile.md、index.md、log.md
     - 適合 GPT 在首次對話時呼叫
     """
     try:

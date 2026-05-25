@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 import os, json
-from src.auth import require_auth
+from src.auth import require_auth, require_memory_write
 from src.config import VAULT_PATH
+from src.obsidian import safe_join
 
 router = APIRouter(dependencies=[Depends(require_auth)])
 
@@ -80,10 +81,13 @@ class ProjectCreate(BaseModel):
     vault_path: str
     description: Optional[str] = None
 
-@router.post("/projects", status_code=201)
+@router.post("/projects", status_code=201, dependencies=[Depends(require_memory_write)])
 def create_project(req: ProjectCreate):
     """建立新專案：在 Vault 建資料夾並加入 PAOS 清單"""
-    target = os.path.join(VAULT_PATH, req.vault_path.lstrip("/").replace("/", os.sep))
+    try:
+        target = safe_join(req.vault_path.lstrip("/"))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     os.makedirs(target, exist_ok=True)
     # 建立 attachments 子目錄
     for sub in ("attachments/images", "attachments/documents", "attachments/audio", "attachments/misc"):

@@ -73,6 +73,7 @@ def start_cloudflared() -> str:
         ["cloudflared", "tunnel", "--url", f"http://localhost:{NODE_PORT}"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        creationflags=subprocess.CREATE_NO_WINDOW,  # 不跳出黑視窗
     )
 
     url = None
@@ -112,11 +113,14 @@ def start_cloudflared() -> str:
         # code = 0 代表正常結束（使用者主動關閉），不視為崩潰
         if code is not None and code != 0:
             import logging as _log
+            import os as _os
             _log.critical(
                 f"[FATAL] cloudflared 異常退出 (exit={code})，"
                 "主動退出 Node，等待排程工作自動重啟..."
             )
-            sys.exit(1)
+            # 注意：sys.exit() 在 daemon thread 裡只會殺掉該 thread，
+            # 改用 os._exit() 直接終止整個 process（bypass Python exception）
+            _os._exit(1)
         else:
             print(f"[cloudflared] 已結束 (exit={code})")
 

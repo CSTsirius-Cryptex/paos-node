@@ -1,52 +1,74 @@
 # -*- mode: python ; coding: utf-8 -*-
-# installer.spec — PAOS Node 安裝精靈 PyInstaller 打包設定
-#
-# 使用方式（在 installer/ 目錄下執行）：
-#   cd D:\Claude\paos-node\installer
-#   pyinstaller installer.spec
-#
-# 輸出：dist/paos-installer.exe（單檔，無 cmd 視窗）
-# 打包完後，將 paos-installer.exe 複製到 paos-node 根目錄再發布。
+"""
+installer.spec — PAOS Node 安裝精靈 PyInstaller 打包配置 (v2)
+
+打包指令（在 installer/ 目錄下執行）：
+    cd D:\\Claude\\paos-node\\installer
+    pyinstaller installer.spec
+
+輸出：../paos-installer.exe（直接輸出到 paos-node 根目錄，與 start.py 同層）
+
+frozen 行為：
+  - sys.executable = paos-installer.exe 所在路徑
+  - installer_logic.INSTALL_DIR = Path(sys.executable).parent  → paos-node 根目錄
+  - 靜態資源解壓到 sys._MEIPASS/static/
+  - pywebview 優先 edgechromium（Edge WebView2，Windows 10/11 內建）
+    fallback：winforms（pythonnet + .NET）
+"""
 
 from pathlib import Path
+from PyInstaller.utils.hooks import collect_all
 
-# ── 路徑 ────────────────────────────────────────────────────────────────────
-HERE      = Path(SPECPATH)          # installer/ 目錄（spec 檔所在位置）
-ROOT      = HERE.parent             # paos-node 根目錄
-STATIC    = HERE / "static"         # installer/static/
+# ── 路徑 ─────────────────────────────────────────────────────────────────────
+HERE   = Path(SPECPATH)          # installer/ 目錄（spec 所在位置）
+STATIC = HERE / "static"         # installer/static/  (HTML/CSS/JS)
+DIST   = HERE.parent             # 輸出到 paos-node 根目錄
 
-# ── Analysis ────────────────────────────────────────────────────────────────
+# ── 收集 pywebview 全部資產（templates、js bridge、多 backend 的附加檔案）────
+webview_datas, webview_binaries, webview_hiddenimports = collect_all("webview")
+
+# ── Analysis ─────────────────────────────────────────────────────────────────
 a = Analysis(
     [str(HERE / "installer.py")],
-    pathex=[str(HERE)],
-    binaries=[],
+    pathex=[str(HERE)],              # 讓 installer_logic 被找到
+    binaries=webview_binaries,
     datas=[
-        # 靜態 UI 資源（html / css / js）→ 解壓後在 _MEIPASS/static/
-        (str(STATIC), "static"),
+        (str(STATIC), "static"),     # 安裝精靈 UI → _MEIPASS/static/
+        *webview_datas,              # pywebview 內建資源
     ],
     hiddenimports=[
-        # pywebview Windows 後端
+        # ── pywebview Windows backends ───────────────────────────────────
         "webview",
-        "webview.platforms.winforms",
-        # installer 本體
+        "webview.platforms.edgechromium",   # 優先：Edge WebView2（無需額外 DLL）
+        "webview.platforms.winforms",       # fallback：pythonnet + .NET
+        "webview.platforms.mshtml",         # legacy fallback
+        # ── pythonnet（winforms backend 依賴）───────────────────────────
+        "clr",
+        "clr_loader",
+        # ── installer 本體 ───────────────────────────────────────────────
         "installer_logic",
-        # HTTP 用戶端
+        # ── HTTP ─────────────────────────────────────────────────────────
         "httpx",
         "httpx._transports.default",
         "httpcore",
-        # pythonnet（pywebview winforms 依賴）
-        "clr",
-        "clr_loader",
+        "httpcore._async.http11",
+        "httpcore._sync.http11",
+        *webview_hiddenimports,
     ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[
-        # 不需要的大型套件
+        # 排除不需要的大型套件（縮小 exe 體積 & 加快啟動）
         "tkinter",
         "matplotlib",
         "numpy",
         "PIL",
+        "pytest",
+        "uvicorn",
+        "fastapi",
+        "sqlalchemy",
+        "src",           # paos-node 後端，不需打入 installer
     ],
     noarchive=False,
     optimize=1,
@@ -61,17 +83,19 @@ exe = EXE(
     a.datas,
     [],
     name="paos-installer",
+    # distpath 需在命令列指定：pyinstaller --distpath=.. installer.spec
+    # 或 build 後執行：copy dist\paos-installer.exe ..\
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=False,                # 不壓縮（避免防毒誤報）
+    upx=False,                   # 不壓縮：防止防毒誤判
     upx_exclude=[],
-    console=False,            # 不顯示 cmd 黑視窗（GUI 模式）
+    console=False,               # GUI 模式：不顯示 cmd 黑視窗
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    # icon="static/icon.ico",  # 備用：若有圖示檔可取消註解
+    # icon=str(STATIC / "icon.ico"),  # 若有圖示檔取消此行
     onefile=True,
 )

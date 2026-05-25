@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Optional
-from src.auth import require_api_key
+from src.auth import require_api_key, require_memory_write
 from src.obsidian import write_note, append_note, resolve_memory_path
 
 router = APIRouter(dependencies=[Depends(require_api_key)])
@@ -18,8 +18,8 @@ class MemoryRequest(BaseModel):
     l3_detail: Optional[str] = None
     append: Optional[bool] = False
 
-@router.post("/memory")
-@router.post("/paos/memory")
+@router.post("/memory", dependencies=[Depends(require_memory_write)])
+@router.post("/paos/memory", dependencies=[Depends(require_memory_write)])
 def write_memory(req: MemoryRequest):
     try:
         path = resolve_memory_path(req.memory_type, {

@@ -4,221 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=960">
   <title>PAOS Node 控制台</title>
-  <!-- CSS 佔位：等 Claude Design 設計稿完成後填入 -->
-  <link rel="stylesheet" href="panel.css">
+  <link rel="stylesheet" href="/panel/fonts/fonts.css">
+  <link rel="stylesheet" href="/panel/panel.css">
 </head>
 <body>
 
-  <!-- Tab 導覽列 -->
-  <nav class="tab-nav" role="tablist">
-    <button class="tab-btn active" data-tab="status"   role="tab" aria-selected="true">狀態總覽</button>
-    <button class="tab-btn"        data-tab="gpts"     role="tab" aria-selected="false">我的助理</button>
-    <button class="tab-btn"        data-tab="settings" role="tab" aria-selected="false">設定</button>
-    <button class="tab-btn"        data-tab="logs"     role="tab" aria-selected="false">執行記錄</button>
+<div class="window" id="window">
+
+  <!-- Tab bar -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab active" data-tab="status">
+      <span class="ico"><svg viewBox="0 0 16 16" fill="none"><circle cx="4" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="12" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.4"/></svg></span>
+      <span>狀態總覽</span>
+    </button>
+    <button class="tab" data-tab="gpts">
+      <span class="ico"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="7.5" r="1" fill="currentColor"/><circle cx="10" cy="7.5" r="1" fill="currentColor"/><path d="M8 1v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      <span>我的助理</span>
+    </button>
+    <button class="tab" data-tab="settings">
+      <span class="ico"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M15 8h-2M3 8H1M13 3l-1.5 1.5M4.5 11.5L3 13M13 13l-1.5-1.5M4.5 4.5L3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      <span>設定</span>
+    </button>
+    <button class="tab" data-tab="logs">
+      <span class="ico"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7l1.5 1.5L5 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 10h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      <span>執行記錄</span>
+    </button>
   </nav>
 
-  <!-- ── Tab 1：狀態總覽 ──────────────────────────────────────── -->
-  <section id="tab-status" class="tab-content" role="tabpanel">
+  <!-- Op banner (hidden by default, shown during long operations) -->
+  <div id="op-banner" class="op-banner" hidden>
+    <span class="op-spinner" id="op-spinner"></span>
+    <span class="op-banner-msg" id="op-banner-msg"></span>
+    <button class="op-banner-dismiss" id="op-banner-dismiss" title="關閉">✕</button>
+  </div>
 
-    <div class="status-indicators">
-      <div class="status-item" data-key="scheduler">
-        <span class="status-dot" data-state="unknown"></span>
-        <span class="status-label">排程工作</span>
-      </div>
-      <div class="status-item" data-key="node">
-        <span class="status-dot" data-state="unknown"></span>
-        <span class="status-label">Node 服務</span>
-        <span class="status-meta" data-meta="node-latency"></span>
-      </div>
-      <div class="status-item" data-key="vault">
-        <span class="status-dot" data-state="unknown"></span>
-        <span class="status-label">Vault 存取</span>
-      </div>
-      <div class="status-item" data-key="tunnel">
-        <span class="status-dot" data-state="unknown"></span>
-        <span class="status-label">Tunnel</span>
-        <span class="tunnel-url" data-meta="tunnel-url" data-copy title="點擊複製"></span>
-      </div>
-      <div class="status-item" data-key="central">
-        <span class="status-dot" data-state="unknown"></span>
-        <span class="status-label">Central 連線</span>
-        <span class="status-meta" data-meta="central-latency"></span>
-      </div>
-      <div class="status-item" data-key="registered">
-        <span class="status-dot" data-state="unknown"></span>
-        <span class="status-label">已向 Central 登錄</span>
-      </div>
-    </div>
+  <!-- Content area (filled by panel.js) -->
+  <section class="content" id="content"></section>
 
-    <div class="action-buttons">
-      <button id="btn-diagnose"     class="btn-primary">連線診斷</button>
-      <button id="btn-refresh-status">重新整理</button>
-      <button id="btn-start-node">啟動 Node</button>
-      <button id="btn-restart-node">重啟 Node</button>
-      <button id="btn-repair">修復</button>
-    </div>
+</div>
 
-    <div class="diagnose-result" id="diagnose-result" hidden>
-      <ol class="diagnose-steps" id="diagnose-steps">
-        <!-- JS 動態填入 -->
-      </ol>
-    </div>
-
-    <div class="refresh-setting">
-      <label for="refresh-interval">自動刷新：</label>
-      <select id="refresh-interval">
-        <option value="10">每 10 秒</option>
-        <option value="30" selected>每 30 秒</option>
-        <option value="60">每 60 秒</option>
-        <option value="120">每 120 秒</option>
-        <option value="0">關閉</option>
-      </select>
-    </div>
-
-  </section>
-
-  <!-- ── Tab 2：我的助理 ──────────────────────────────────────── -->
-  <section id="tab-gpts" class="tab-content" hidden role="tabpanel">
-
-    <div class="tab-toolbar">
-      <button id="btn-refresh-gpts">重新整理</button>
-    </div>
-
-    <div class="gpt-list" id="gpt-list">
-      <!-- JS 動態填入 GPT 卡片 -->
-    </div>
-
-    <div class="empty-state" id="gpts-empty" hidden>
-      <span class="empty-icon">🤖</span>
-      <p>目前沒有可用的助理</p>
-    </div>
-
-    <div class="error-state" id="gpts-error" hidden>
-      <p class="error-message" id="gpts-error-msg"></p>
-    </div>
-
-  </section>
-
-  <!-- ── Tab 3：設定 ──────────────────────────────────────────── -->
-  <section id="tab-settings" class="tab-content" hidden role="tabpanel">
-
-    <!-- Group 1：記憶庫 -->
-    <fieldset class="settings-group">
-      <legend>記憶庫</legend>
-      <div class="setting-row">
-        <label for="setting-vault-path">Vault 路徑</label>
-        <input type="text" id="setting-vault-path" readonly>
-        <button id="btn-browse-vault">選擇資料夾</button>
-      </div>
-      <p class="setting-hint restart-hint" id="vault-restart-hint" hidden>
-        ⚠️ 修改將於重啟 Node 後生效
-      </p>
-      <div class="setting-row">
-        <label>歸檔預設路徑</label>
-        <span id="setting-attachment-path" class="setting-readonly-text"></span>
-      </div>
-      <p class="setting-hint">未指定專案時，GPT 產出的檔案存放於此資料夾</p>
-    </fieldset>
-
-    <!-- Group 2：系統 -->
-    <fieldset class="settings-group">
-      <legend>系統</legend>
-      <div class="setting-row">
-        <label for="setting-auto-start">開機自動啟動</label>
-        <input type="checkbox" id="setting-auto-start">
-      </div>
-      <div class="setting-row">
-        <label for="setting-refresh-interval">自動刷新間隔</label>
-        <select id="setting-refresh-interval">
-          <option value="10">每 10 秒</option>
-          <option value="30">每 30 秒</option>
-          <option value="60">每 60 秒</option>
-          <option value="120">每 120 秒</option>
-          <option value="0">關閉</option>
-        </select>
-      </div>
-    </fieldset>
-
-    <!-- Group 3：Tunnel -->
-    <fieldset class="settings-group">
-      <legend>Tunnel</legend>
-      <div class="setting-row">
-        <label>目前 URL</label>
-        <span id="setting-tunnel-url" class="setting-readonly-text"></span>
-        <button id="btn-copy-tunnel-url">複製</button>
-      </div>
-      <button id="btn-renew-tunnel" class="btn-secondary">
-        重新建立 Tunnel 並重新登錄 Central
-      </button>
-    </fieldset>
-
-    <!-- Group 4：帳號 -->
-    <fieldset class="settings-group">
-      <legend>帳號</legend>
-      <div class="setting-row">
-        <label>Email</label>
-        <span id="setting-email" class="setting-readonly-text"></span>
-      </div>
-      <div class="setting-row">
-        <label>Token 狀態</label>
-        <span id="setting-token-status" class="setting-readonly-text"></span>
-      </div>
-
-      <!-- 重新登入流程（預設隱藏）-->
-      <div id="reauth-form" hidden>
-        <div class="setting-row">
-          <label for="reauth-email">Email</label>
-          <input type="email" id="reauth-email" placeholder="輸入 email">
-          <button id="btn-send-otp">發送驗證碼</button>
-        </div>
-        <div class="setting-row" id="otp-row" hidden>
-          <label for="reauth-otp">驗證碼</label>
-          <input type="text" id="reauth-otp" placeholder="6 位數驗證碼" maxlength="6">
-          <button id="btn-verify-otp">確認登入</button>
-        </div>
-        <p class="setting-hint" id="reauth-hint"></p>
-      </div>
-
-      <div class="account-actions">
-        <button id="btn-reauth">重新登入</button>
-        <button id="btn-logout" class="btn-danger">登出</button>
-      </div>
-    </fieldset>
-
-    <div class="settings-save-row">
-      <button id="btn-save-settings" class="btn-primary">儲存設定</button>
-      <span class="save-status" id="save-status"></span>
-    </div>
-
-  </section>
-
-  <!-- ── Tab 4：執行記錄 ──────────────────────────────────────── -->
-  <section id="tab-logs" class="tab-content tab-logs-section" hidden role="tabpanel">
-
-    <div class="log-toolbar">
-      <label class="log-toggle">
-        <input type="checkbox" id="log-auto-scroll" checked>
-        自動捲動
-      </label>
-      <button id="btn-refresh-logs">重新整理</button>
-      <button id="btn-clear-logs">清除顯示</button>
-    </div>
-
-    <div class="log-output" id="log-output">
-      <pre id="log-content"></pre>
-    </div>
-
-  </section>
-
-  <!-- 確認對話框（通用） -->
-  <dialog id="confirm-dialog">
-    <p id="confirm-message"></p>
-    <div class="dialog-actions">
-      <button id="confirm-ok" class="btn-danger">確認</button>
-      <button id="confirm-cancel">取消</button>
-    </div>
-  </dialog>
-
-  <script src="panel.js"></script>
+<script src="/panel/panel.js"></script>
 </body>
 </html>
