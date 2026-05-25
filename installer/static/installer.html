@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=720">
+  <title>PAOS Node 安裝精靈</title>
+  <link rel="stylesheet" href="installer.css">
+</head>
+<body>
+
+  <!-- 頂部標題列 -->
+  <header class="inst-header">
+    <div class="inst-logo">PAOS</div>
+    <div class="inst-title">Node 安裝精靈</div>
+  </header>
+
+  <!-- 步驟指示器 -->
+  <nav class="steps-nav">
+    <div class="step-item active" data-step="1">
+      <div class="step-circle">1</div>
+      <div class="step-label">環境確認</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="2">
+      <div class="step-circle">2</div>
+      <div class="step-label">記憶庫</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="3">
+      <div class="step-circle">3</div>
+      <div class="step-label">帳號登入</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="4">
+      <div class="step-circle">4</div>
+      <div class="step-label">建立通道</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="5">
+      <div class="step-circle">5</div>
+      <div class="step-label">完成</div>
+    </div>
+  </nav>
+
+  <!-- 主內容區 -->
+  <main class="inst-body">
+
+    <!-- ── Step 1：環境確認 ── -->
+    <section class="inst-step active" id="step-1">
+      <h2 class="step-heading">歡迎使用 PAOS Node 安裝精靈</h2>
+      <p class="step-desc">開始前先確認你的電腦環境符合需求。</p>
+
+      <div class="env-checks" id="env-checks">
+        <div class="env-item loading" id="env-python">
+          <span class="env-icon">⏳</span>
+          <span class="env-name">Python</span>
+          <span class="env-detail">檢查中…</span>
+        </div>
+        <div class="env-item loading" id="env-cloudflared">
+          <span class="env-icon">⏳</span>
+          <span class="env-name">cloudflared</span>
+          <span class="env-detail">檢查中…</span>
+        </div>
+        <div class="env-item loading" id="env-port">
+          <span class="env-icon">⏳</span>
+          <span class="env-name">Port 3100</span>
+          <span class="env-detail">檢查中…</span>
+        </div>
+        <div class="env-item loading" id="env-dir">
+          <span class="env-icon">⏳</span>
+          <span class="env-name">安裝目錄</span>
+          <span class="env-detail">檢查中…</span>
+        </div>
+      </div>
+
+      <div class="env-hint" id="env-hint" hidden></div>
+
+      <div class="cloudflared-guide" id="cloudflared-guide" hidden>
+        <p>⚠️ 請先安裝 cloudflared：</p>
+        <ol>
+          <li>前往 <strong>https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/</strong></li>
+          <li>下載 Windows 64-bit 版本</li>
+          <li>將 <code>cloudflared.exe</code> 放到 <code>C:\Windows\System32\</code> 或 PATH 目錄</li>
+          <li>安裝完成後點「重新檢查」</li>
+        </ol>
+        <button class="btn-secondary" id="btn-recheck">重新檢查</button>
+      </div>
+    </section>
+
+    <!-- ── Step 2：記憶庫路徑 ── -->
+    <section class="inst-step" id="step-2" hidden>
+      <h2 class="step-heading">設定記憶庫路徑</h2>
+      <p class="step-desc">請選擇你的 Obsidian Vault 根目錄。PAOS Node 會將對話記憶、筆記和工作任務存放於此。</p>
+
+      <div class="field-group">
+        <label class="field-label">Vault 根目錄</label>
+        <div class="field-row">
+          <input type="text" id="vault-path" class="field-input" placeholder="C:/Users/你的名字/ObsidianVault" readonly>
+          <button class="btn-secondary" id="btn-browse">選擇資料夾</button>
+        </div>
+        <p class="field-hint" id="vault-hint"></p>
+      </div>
+
+      <div class="path-preview" id="path-preview" hidden>
+        <div class="path-item">📁 <span id="preview-notes">…/PAOS/notes/</span></div>
+        <div class="path-item">📁 <span id="preview-attachments">…/PAOS/attachments/</span></div>
+        <div class="path-item">📁 <span id="preview-agents">…/agents/</span></div>
+      </div>
+    </section>
+
+    <!-- ── Step 3：帳號登入 ── -->
+    <section class="inst-step" id="step-3" hidden>
+      <h2 class="step-heading">登入 PAOS Central</h2>
+      <p class="step-desc">輸入你的 Email，我們會發送一次性驗證碼來確認身份。</p>
+
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <div class="field-row">
+          <input type="email" id="otp-email" class="field-input" placeholder="your@email.com">
+          <button class="btn-secondary" id="btn-send-otp">發送驗證碼</button>
+        </div>
+      </div>
+
+      <div class="field-group" id="otp-group" hidden>
+        <label class="field-label">驗證碼</label>
+        <div class="field-row">
+          <input type="text" id="otp-code" class="field-input otp-input" placeholder="6 位數驗證碼" maxlength="6">
+          <button class="btn-primary" id="btn-verify-otp">確認登入</button>
+        </div>
+      </div>
+
+      <p class="field-hint" id="otp-hint"></p>
+
+      <div class="login-success" id="login-success" hidden>
+        <div class="success-icon">✅</div>
+        <div class="success-text">
+          <strong>登入成功</strong>
+          <span id="login-gpt-count"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Step 4：建立通道 ── -->
+    <section class="inst-step" id="step-4" hidden>
+      <h2 class="step-heading">建立安全通道</h2>
+      <p class="step-desc">正在建立 cloudflared Quick Tunnel，讓 GPT 助理可以安全連接到你的 Node。</p>
+
+      <div class="tunnel-steps" id="tunnel-steps">
+        <div class="tunnel-step" id="tstep-start">
+          <span class="tstep-icon">⏳</span>
+          <span class="tstep-label">啟動 cloudflared</span>
+        </div>
+        <div class="tunnel-step" id="tstep-url">
+          <span class="tstep-icon">⏸</span>
+          <span class="tstep-label">取得公開 URL</span>
+        </div>
+        <div class="tunnel-step" id="tstep-register">
+          <span class="tstep-icon">⏸</span>
+          <span class="tstep-label">向 Central 登錄</span>
+        </div>
+      </div>
+
+      <div class="tunnel-url-display" id="tunnel-url-display" hidden>
+        <span class="tunnel-url-label">你的 Node URL：</span>
+        <span class="tunnel-url-value" id="tunnel-url-value"></span>
+      </div>
+
+      <p class="field-hint" id="tunnel-hint"></p>
+    </section>
+
+    <!-- ── Step 5：安裝完成 ── -->
+    <section class="inst-step" id="step-5" hidden>
+      <h2 class="step-heading">🎉 安裝完成！</h2>
+      <p class="step-desc">PAOS Node 已成功安裝並設定完成。</p>
+
+      <div class="finish-checklist" id="finish-checklist">
+        <div class="finish-item" id="fitem-env">⏳ 環境設定檔（.env）</div>
+        <div class="finish-item" id="fitem-node-task">⏳ PAOS-Node 排程工作</div>
+        <div class="finish-item" id="fitem-panel-task">⏳ PAOS-Node-控制台 排程工作</div>
+        <div class="finish-item" id="fitem-shortcut">⏳ 桌面捷徑</div>
+      </div>
+
+      <div class="finish-note" id="finish-note" hidden>
+        <p>⚠️ 部分步驟未成功，請查閱詳細說明：</p>
+        <pre id="finish-error-detail"></pre>
+      </div>
+
+      <p class="finish-hint">重新登入 Windows 後，PAOS Node 會自動在背景啟動。<br>
+         點下方按鈕立即開啟控制台。</p>
+    </section>
+
+  </main>
+
+  <!-- 底部按鈕列 -->
+  <footer class="inst-footer">
+    <button class="btn-ghost" id="btn-back" hidden>← 上一步</button>
+    <div class="footer-spacer"></div>
+    <button class="btn-primary" id="btn-next" disabled>下一步 →</button>
+    <button class="btn-primary" id="btn-finish" hidden>開啟控制台</button>
+  </footer>
+
+  <script src="installer.js"></script>
+</body>
+</html>

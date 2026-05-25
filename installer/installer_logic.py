@@ -18,8 +18,13 @@ CENTRAL_URL = "https://paos-central-production.up.railway.app"
 NODE_PORT   = 3100
 CLOUDFLARED_PATTERN = re.compile(r"https://[a-z0-9-]+\.trycloudflare\.com")
 
-# 安裝目標目錄（installer.py 同層，即 paos-node 根目錄）
-INSTALL_DIR = Path(__file__).parent.parent.resolve()
+# 安裝目標目錄（paos-node 根目錄）
+# frozen（PyInstaller .exe）模式：.exe 放在 paos-node 根目錄，直接取 executable 所在目錄
+# 開發模式：installer_logic.py 在 installer/，往上一層即為根目錄
+if getattr(sys, "frozen", False):
+    INSTALL_DIR = Path(sys.executable).parent.resolve()
+else:
+    INSTALL_DIR = Path(__file__).parent.parent.resolve()
 ENV_FILE    = INSTALL_DIR / ".env"
 
 
@@ -333,11 +338,77 @@ $sc.Save()
         return {"ok": False, "note": str(e)}
 
 
+def write_launch_panel_vbs() -> dict:
+    """
+    動態產生 launch-panel.vbs，使用目前 Python 路徑與安裝目錄（取代硬編碼）。
+
+    frozen 模式：pythonw 路徑從 PATH 或 venv 取得。
+    開發模式：使用 sys.executable 旁的 pythonw.exe。
+    """
+    try:
+        # 決定 pythonw 路徑（優先序：venv → 當前 Python dir → PATH）
+        venv_pythonw = INSTALL_DIR / "venv" / "Scripts" / "pythonw.exe"
+        if venv_pythonw.exists():
+            pythonw = venv_pythonw
+        elif not getattr(sys, "frozen", False):
+            # 開發模式：與 sys.executable 同目錄
+            py_dir  = Path(sys.executable).parent
+            pythonw = py_dir / "pythonw.exe"
+            if not pythonw.exists():
+                pythonw = Path(sys.executable)   # fallback: python.exe
+        else:
+            # frozen 模式：從 PATH 找
+            import shutil
+            found = shutil.which("pythonw") or shutil.which("python")
+            pythonw = Path(found) if found else Path("pythonw.exe")
+
+        pythonw_str = str(pythonw)
+        node_dir    = str(INSTALL_DIR)
+
+        vbs_lines = [
+            'Dim oShell, pythonw, nodeDir, q',
+            'Set oShell = WScript.CreateObject("WScript.Shell")',
+            '',
+            f'pythonw = "{pythonw_str}"',
+            f'nodeDir = "{node_dir}"',
+            'q       = Chr(34)',
+            '',
+            "' Step 1: Check if Node is already running on port 3100",
+            'Dim nodeRunning, oExec, sOut',
+            'nodeRunning = False',
+            'On Error Resume Next',
+            'Set oExec = oShell.Exec("cmd /c netstat -ano | findstr :3100")',
+            'If Err.Number = 0 Then',
+            '    sOut = oExec.StdOut.ReadAll()',
+            '    If InStr(sOut, "LISTENING") > 0 Or InStr(sOut, "127.0.0.1:3100") > 0 Then',
+            '        nodeRunning = True',
+            '    End If',
+            'End If',
+            'On Error GoTo 0',
+            '',
+            "' Step 2: Start Node if not running (direct pythonw, bypasses schtasks PATH issue)",
+            'If Not nodeRunning Then',
+            '    oShell.CurrentDirectory = nodeDir',
+            r'    oShell.Run q & pythonw & q & " " & q & nodeDir & "\start.py" & q, 0, False',
+            'End If',
+            '',
+            "' Step 3: Launch panel (single-instance + waits up to 90s for Node)",
+            r'oShell.Run q & pythonw & q & " " & q & nodeDir & "\panel_app.py" & q, 0, False',
+        ]
+
+        vbs_path = INSTALL_DIR / "launch-panel.vbs"
+        vbs_path.write_text("\n".join(vbs_lines) + "\n", encoding="utf-8")
+        return {"ok": True, "path": str(vbs_path), "pythonw": pythonw_str}
+    except Exception as e:
+        return {"ok": False, "note": str(e)}
+
+
 def run_full_setup(vault_path: str, token: str, email: str) -> dict:
-    """I-6 完整安裝流程：寫 .env → 排程工作 → 捷徑。"""
+    """I-6 完整安裝流程：寫 .env → launch-panel.vbs → 排程工作 → 捷徑。"""
     steps = {}
 
     steps["env"]      = write_env(vault_path, token, email)
+    steps["vbs"]      = write_launch_panel_vbs()
     steps["tasks"]    = install_scheduled_tasks()
     steps["shortcut"] = create_desktop_shortcut()
 
