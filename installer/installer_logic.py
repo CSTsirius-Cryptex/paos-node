@@ -92,11 +92,15 @@ def validate_vault_path(path: str) -> dict:
 
 # ── I-4：OTP 登入 ──────────────────────────────────────────────────
 
-def request_otp(email: str) -> dict:
+def request_otp(email: str, name: str = "") -> dict:
+    """向 Central 請求 OTP。name 為新使用者必填，已有帳號的使用者可留空。"""
+    payload: dict = {"email": email}
+    if name:
+        payload["name"] = name
     try:
         r = httpx.post(
             f"{CENTRAL_URL}/auth/request-otp",
-            json={"email": email}, timeout=10
+            json=payload, timeout=10
         )
         if r.status_code == 200:
             return {"ok": True}

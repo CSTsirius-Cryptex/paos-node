@@ -44,8 +44,8 @@ class InstallerAPI:
         return logic.validate_vault_path(path)
 
     # ── I-4：OTP 登入 ──
-    def request_otp(self, email: str):
-        return logic.request_otp(email)
+    def request_otp(self, email: str, name: str = ""):
+        return logic.request_otp(email, name)
 
     def verify_otp(self, email: str, otp: str):
         return logic.verify_otp(email, otp)

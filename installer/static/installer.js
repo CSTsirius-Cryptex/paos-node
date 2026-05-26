@@ -5,6 +5,7 @@
 const state = {
   currentStep: 1,
   vault:     null,   // 選擇的 Vault 路徑
+  name:      null,
   email:     null,
   token:     null,
   gptCount:  0,
@@ -140,15 +141,20 @@ let _otpEmail = null;
 
 $("#btn-send-otp").addEventListener("click", () => {
   const email = $("#otp-email").value.trim();
-  if (!email) return;
+  const name  = $("#otp-name").value.trim();
+  if (!email) {
+    setHint($("#otp-hint"), "❌ 請輸入 Email", "error");
+    return;
+  }
 
   $("#btn-send-otp").disabled = true;
   setHint($("#otp-hint"), "發送中…", "");
 
-  api("request_otp", email).then(r => {
+  api("request_otp", email, name).then(r => {
     if (r.ok) {
-      _otpEmail = email;
+      _otpEmail   = email;
       state.email = email;
+      state.name  = name;
       $("#otp-group").hidden = false;
       setHint($("#otp-hint"), "✅ 驗證碼已寄出，請查看信箱", "ok");
       $("#otp-code").focus();
