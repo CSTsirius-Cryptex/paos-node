@@ -75,12 +75,22 @@
 
       <div class="env-hint" id="env-hint" hidden></div>
 
+      <div class="python-guide" id="python-guide" hidden>
+        <p>⚠️ 請先安裝 Python：</p>
+        <ol>
+          <li>前往 <a class="ext-link" onclick="openExternal('https://www.python.org/downloads/')">Python 官方下載頁面</a></li>
+          <li>下載 Python 3.10 以上版本（Windows installer）</li>
+          <li>安裝時務必勾選「<strong>Add Python to PATH</strong>」</li>
+          <li>安裝完成後點「重新檢查」</li>
+        </ol>
+      </div>
+
       <div class="cloudflared-guide" id="cloudflared-guide" hidden>
         <p>⚠️ 請先安裝 cloudflared：</p>
         <ol>
-          <li>前往 <strong>https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/</strong></li>
-          <li>下載 Windows 64-bit 版本</li>
-          <li>將 <code>cloudflared.exe</code> 放到 <code>C:\Windows\System32\</code> 或 PATH 目錄</li>
+          <li>前往 <a class="ext-link" onclick="openExternal('https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/')">Cloudflare 官方下載頁面</a></li>
+          <li>下載 <strong>Windows 64-bit</strong> 版本（<code>cloudflared-windows-amd64.exe</code>）</li>
+          <li>將檔案改名為 <code>cloudflared.exe</code>，放到 <code>C:\Windows\System32\</code></li>
           <li>安裝完成後點「重新檢查」</li>
         </ol>
         <button class="btn-secondary" id="btn-recheck">重新檢查</button>

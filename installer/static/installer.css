@@ -120,13 +120,22 @@ html, body {
   border: 1px solid #fecaca; border-radius: var(--radius);
 }
 
-.cloudflared-guide {
+.cloudflared-guide, .python-guide {
   background: #fffbeb; border: 1px solid #fde68a;
   border-radius: var(--radius); padding: 14px 16px;
   font-size: 13px; display: flex; flex-direction: column; gap: 8px;
 }
-.cloudflared-guide ol { padding-left: 18px; line-height: 1.8; }
-.cloudflared-guide code { background: #fef9c3; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+.cloudflared-guide ol, .python-guide ol { padding-left: 18px; line-height: 1.8; }
+.cloudflared-guide code, .python-guide code { background: #fef9c3; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+/* 可點擊的外部連結 */
+.ext-link {
+  color: var(--purple);
+  text-decoration: underline;
+  cursor: pointer;
+  user-select: none;
+}
+.ext-link:hover { color: #5533a0; }
 
 /* ── Fields ── */
 .field-group { display: flex; flex-direction: column; gap: 6px; }

@@ -52,6 +52,10 @@ function api(method, ...args) {
   return window.pywebview.api[method](...args);
 }
 
+function openExternal(url) {
+  api("open_url", url);
+}
+
 function setHint(el, msg, type) {
   el.textContent = msg;
   el.className = "field-hint" + (type ? " " + type : "");
@@ -74,6 +78,7 @@ function enterStep1() {
     el.querySelector(".env-icon").textContent  = "⏳";
     el.querySelector(".env-detail").textContent = "檢查中…";
   });
+  $("#python-guide").hidden = true;
   $("#cloudflared-guide").hidden = true;
   $("#env-hint").hidden = true;
   btnNext.disabled = true;
@@ -84,6 +89,9 @@ function enterStep1() {
     setEnvItem("env-port",        r.port.ok,         r.port.note);
     setEnvItem("env-dir",         r.install_dir.ok,  r.install_dir.ok ? r.install_dir.path : (r.install_dir.note || r.install_dir.path));
 
+    if (!r.python.ok) {
+      $("#python-guide").hidden = false;
+    }
     if (!r.cloudflared.ok) {
       $("#cloudflared-guide").hidden = false;
     }

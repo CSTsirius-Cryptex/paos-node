@@ -69,6 +69,12 @@ class InstallerAPI:
         return logic.run_full_setup(vault_path, token, email)
 
     # ── 通用 ──
+    def open_url(self, url: str):
+        """在系統預設瀏覽器開啟外部連結。"""
+        import webbrowser
+        webbrowser.open(url)
+        return {"ok": True}
+
     def get_install_dir(self):
         return str(logic.INSTALL_DIR).replace("\\", "/")
 
