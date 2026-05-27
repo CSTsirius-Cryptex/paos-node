@@ -49,6 +49,10 @@ class InstallerAPI:
             return result[0].replace("\\", "/")
         return None
 
+    # ── Obsidian（建議安裝，在 Step 3 顯示）──
+    def check_obsidian(self):
+        return logic.check_obsidian()
+
     # ── Step 3：Vault 路徑 ──
     def browse_folder(self):
         """開啟資料夾選擇對話框（Vault 根目錄）。"""

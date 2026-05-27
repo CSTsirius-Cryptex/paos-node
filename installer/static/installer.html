@@ -66,11 +66,6 @@
           <span class="env-name">cloudflared</span>
           <span class="env-detail">檢查中…</span>
         </div>
-        <div class="env-item loading" id="env-obsidian">
-          <span class="env-icon">⏳</span>
-          <span class="env-name">Obsidian</span>
-          <span class="env-detail">檢查中…</span>
-        </div>
         <div class="env-item loading" id="env-port">
           <span class="env-icon">⏳</span>
           <span class="env-name">Port 3100</span>
@@ -128,28 +123,6 @@
         </details>
       </div>
 
-      <!-- Obsidian 安裝引導 -->
-      <div class="install-guide" id="obsidian-guide" hidden>
-        <p>⚠️ 需要安裝或更新 Obsidian（必要）：</p>
-        <div class="cf-actions">
-          <button class="btn-primary" id="btn-auto-install-ob">⬇ 自動下載安裝（推薦）</button>
-          <button class="btn-ghost" id="btn-recheck-ob">重新檢查</button>
-        </div>
-        <div class="cf-progress" id="ob-progress" hidden>
-          <div class="cf-progress-bar-track">
-            <div class="cf-progress-bar" id="ob-progress-bar"></div>
-          </div>
-          <span class="cf-progress-label" id="ob-progress-label">準備中…</span>
-        </div>
-        <details class="cf-manual">
-          <summary>手動安裝說明</summary>
-          <ol>
-            <li>前往 <a class="ext-link" onclick="openExternal('https://obsidian.md/download')">Obsidian 官方下載頁面</a></li>
-            <li>下載並安裝最新版 Windows 安裝程式</li>
-            <li>安裝完成後點「重新檢查」</li>
-          </ol>
-        </details>
-      </div>
     </section>
 
     <!-- ── Step 2：安裝目錄 ── -->
@@ -196,6 +169,40 @@
         <div class="path-item">📁 <span id="preview-notes">…/PAOS/notes/</span></div>
         <div class="path-item">📁 <span id="preview-attachments">…/PAOS/attachments/</span></div>
         <div class="path-item">📁 <span id="preview-agents">…/agents/</span></div>
+      </div>
+
+      <!-- Obsidian 推薦安裝（非強制） -->
+      <div class="obsidian-rec" id="obsidian-rec">
+        <div class="obsidian-rec-header">
+          <span id="obsidian-rec-icon">📦</span>
+          <div>
+            <strong>建議安裝 Obsidian</strong>
+            <span class="obsidian-rec-sub" id="obsidian-rec-sub">（檢查中…）</span>
+          </div>
+          <button class="btn-ghost btn-sm" id="btn-recheck-ob" style="margin-left:auto">重新檢查</button>
+        </div>
+        <p class="obsidian-rec-desc">
+          Obsidian 是 PAOS 記憶庫的視覺化瀏覽工具，讓你閱讀、搜尋 AI 幫你記下的筆記與工作記錄。
+          沒有也能使用 PAOS，但強烈建議安裝，否則記憶內容難以閱讀。
+        </p>
+        <div id="obsidian-install-section" hidden>
+          <div class="cf-actions">
+            <button class="btn-primary" id="btn-auto-install-ob">⬇ 自動下載安裝 Obsidian</button>
+          </div>
+          <div class="cf-progress" id="ob-progress" hidden>
+            <div class="cf-progress-bar-track">
+              <div class="cf-progress-bar" id="ob-progress-bar"></div>
+            </div>
+            <span class="cf-progress-label" id="ob-progress-label">準備中…</span>
+          </div>
+          <details class="cf-manual" style="margin-top:6px">
+            <summary>手動安裝</summary>
+            <ol>
+              <li>前往 <a class="ext-link" onclick="openExternal('https://obsidian.md/download')">obsidian.md/download</a> 下載並安裝</li>
+              <li>安裝完成後點「重新檢查」</li>
+            </ol>
+          </details>
+        </div>
       </div>
     </section>
 

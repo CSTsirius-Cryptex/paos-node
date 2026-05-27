@@ -46,6 +46,7 @@ function goTo(n) {
   // 觸發各步驟進入邏輯
   if (n === 1) enterStep1();
   if (n === 2) enterStep2();
+  if (n === 3) checkObsidianStatus();  // 進入記憶庫步驟時自動檢查 Obsidian
   if (n === 5) enterStep5();
   if (n === 6) enterStep6();
 }
@@ -75,32 +76,32 @@ function setEnvItem(id, ok, detail) {
 
 function enterStep1() {
   // 重置所有為 loading
-  ["env-python", "env-cloudflared", "env-obsidian", "env-port"].forEach(id => {
+  ["env-python", "env-cloudflared", "env-port"].forEach(id => {
     const el = $(`#${id}`);
     el.className = "env-item loading";
     el.querySelector(".env-icon").textContent   = "⏳";
     el.querySelector(".env-detail").textContent = "檢查中…";
   });
-  ["python-guide", "cloudflared-guide", "obsidian-guide", "env-hint"].forEach(id => {
+  ["python-guide", "cloudflared-guide", "env-hint"].forEach(id => {
     const el = $(`#${id}`);
     if (el) el.hidden = true;
   });
-  // 重置所有進度條
-  ["py-progress", "cf-progress", "ob-progress"].forEach(id => {
+  // 重置進度條
+  ["py-progress", "cf-progress"].forEach(id => {
     const el = $(`#${id}`);
     if (el) el.hidden = true;
   });
-  ["py-progress-bar", "cf-progress-bar", "ob-progress-bar"].forEach(id => {
+  ["py-progress-bar", "cf-progress-bar"].forEach(id => {
     const el = $(`#${id}`);
     if (el) { el.style.width = "0%"; el.style.background = "var(--purple)"; }
   });
   // 重新啟用自動安裝按鈕（避免上次錯誤後按鈕仍停用）
-  ["btn-auto-install-py", "btn-auto-install-cf", "btn-auto-install-ob"].forEach(id => {
+  ["btn-auto-install-py", "btn-auto-install-cf"].forEach(id => {
     const el = $(`#${id}`);
     if (el) el.disabled = false;
   });
   // 重置進度標籤
-  ["py-progress-label", "cf-progress-label", "ob-progress-label"].forEach(id => {
+  ["py-progress-label", "cf-progress-label"].forEach(id => {
     const el = $(`#${id}`);
     if (el) { el.textContent = "準備中…"; el.style.color = ""; }
   });
@@ -115,18 +116,12 @@ function enterStep1() {
       r.cloudflared.ok
         ? r.cloudflared.version.split(" ").slice(0, 3).join(" ")
         : (r.cloudflared.note || "未安裝"));
-    setEnvItem("env-obsidian",
-      r.obsidian.ok,
-      r.obsidian.ok
-        ? (r.obsidian.note || `Obsidian ${r.obsidian.installed}`)
-        : (r.obsidian.note || "版本過舊或未安裝"));
     setEnvItem("env-port",
       r.port.ok,
       r.port.note);
 
     if (!r.python.ok)     { $("#python-guide").hidden = false; }
     if (!r.cloudflared.ok){ $("#cloudflared-guide").hidden = false; }
-    if (!r.obsidian.ok)   { $("#obsidian-guide").hidden = false; }
 
     if (!r.all_ok) {
       const hint = $("#env-hint");
@@ -144,8 +139,8 @@ function enterStep1() {
 
 // ── Step 1 按鈕事件 ──────────────────────────────────────────────
 
-// 重新檢查按鈕（多個）
-["btn-recheck-py", "btn-recheck-cf", "btn-recheck-ob"].forEach(id => {
+// 重新檢查按鈕（Step 1）
+["btn-recheck-py", "btn-recheck-cf"].forEach(id => {
   const el = $(`#${id}`);
   if (el) el.addEventListener("click", () => enterStep1());
 });
@@ -241,7 +236,38 @@ $("#btn-auto-install-cf").addEventListener("click", () => {
   });
 });
 
-// 自動安裝 Obsidian
+// ── Obsidian 推薦區塊（Step 3）────────────────────────────────────
+function checkObsidianStatus() {
+  const icon    = $("#obsidian-rec-icon");
+  const sub     = $("#obsidian-rec-sub");
+  const section = $("#obsidian-install-section");
+
+  icon.textContent = "⏳";
+  sub.textContent  = "（檢查中…）";
+  sub.style.color  = "";
+
+  api("check_obsidian").then(r => {
+    if (r.installed) {
+      icon.textContent = "✅";
+      sub.textContent  = `（${r.note}）`;
+      sub.style.color  = "#15803d";
+      section.hidden   = true;
+    } else {
+      icon.textContent = "💡";
+      sub.textContent  = "（尚未安裝）";
+      sub.style.color  = "#b45309";
+      section.hidden   = false;
+    }
+  }).catch(() => {
+    icon.textContent = "💡";
+    sub.textContent  = "（無法檢查）";
+    section.hidden   = false;
+  });
+}
+
+$("#btn-recheck-ob").addEventListener("click", () => checkObsidianStatus());
+
+// 自動安裝 Obsidian（Step 3 推薦區塊）
 $("#btn-auto-install-ob").addEventListener("click", () => {
   const btn      = $("#btn-auto-install-ob");
   const progress = $("#ob-progress");
@@ -257,24 +283,21 @@ $("#btn-auto-install-ob").addEventListener("click", () => {
 
   let fakePct = 5;
   const ticker = setInterval(() => {
-    if (fakePct < 82) {
-      fakePct += Math.random() * 1.2;
-      bar.style.width = fakePct + "%";
-    }
+    if (fakePct < 82) { fakePct += Math.random() * 1.2; bar.style.width = fakePct + "%"; }
   }, 800);
 
   api("download_obsidian").then(r => {
     clearInterval(ticker);
     if (r.ok) {
-      bar.style.width   = "100%";
+      bar.style.width      = "100%";
       bar.style.background = "var(--purple)";
-      label.textContent = `✅ Obsidian ${r.version || ""} 安裝完成！正在重新檢查環境…`;
-      label.style.color = "#15803d";
-      setTimeout(() => enterStep1(), 1500);
+      label.textContent    = `✅ Obsidian 安裝完成！`;
+      label.style.color    = "#15803d";
+      setTimeout(() => checkObsidianStatus(), 1000);
     } else {
       bar.style.width      = "100%";
       bar.style.background = "var(--red)";
-      label.textContent    = "❌ " + (r.note || "安裝失敗，請手動安裝 Obsidian");
+      label.textContent    = "❌ " + (r.note || "安裝失敗，請手動安裝");
       label.style.color    = "var(--red)";
       btn.disabled = false;
     }

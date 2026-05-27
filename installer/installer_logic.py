@@ -135,44 +135,6 @@ def check_environment() -> dict:
     except Exception as e:
         result["cloudflared"] = {"ok": False, "version": "", "note": str(e)}
 
-    # ── Obsidian：必要，且必須是最新版 ──
-    try:
-        installed = _get_obsidian_installed_version()
-        latest_info = _get_latest_github_release("obsidianmd", "obsidian-releases")
-        latest = latest_info.get("version") if latest_info["ok"] else None
-
-        def _ver_main(v: str) -> str:
-            """取主版號前三節（去 leading zeros），用於比較。"""
-            parts = v.split(".")
-            try:
-                return ".".join(str(int(p)) for p in parts[:3] if p.isdigit())
-            except Exception:
-                return v
-
-        if not installed:
-            result["obsidian"] = {
-                "ok": False, "installed": None, "latest": latest,
-                "note": "尚未安裝 Obsidian",
-            }
-        elif installed == "installed":
-            # 偵測到已安裝但取不到版本（Squirrel app）
-            result["obsidian"] = {
-                "ok": True, "installed": "已安裝", "latest": latest,
-                "note": f"Obsidian 已安裝（版本未知，如遇問題請確認是最新版）",
-            }
-        elif latest and _ver_main(installed) != _ver_main(latest):
-            result["obsidian"] = {
-                "ok": False, "installed": installed, "latest": latest,
-                "note": f"版本過舊（{installed}），需更新至 {latest}",
-            }
-        else:
-            result["obsidian"] = {
-                "ok": True, "installed": installed, "latest": latest,
-                "note": f"Obsidian {installed}（最新）",
-            }
-    except Exception as e:
-        result["obsidian"] = {"ok": False, "note": str(e)}
-
     # ── Port 3100 ──
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -186,6 +148,25 @@ def check_environment() -> dict:
         v["ok"] for v in result.values() if isinstance(v, dict) and "ok" in v
     )
     return result
+
+
+def check_obsidian() -> dict:
+    """查詢 Obsidian 安裝狀態（供 Step 3 獨立呼叫）。"""
+    try:
+        installed = _get_obsidian_installed_version()
+        latest_info = _get_latest_github_release("obsidianmd", "obsidian-releases")
+        latest = latest_info.get("version") if latest_info["ok"] else None
+
+        if not installed:
+            return {"installed": False, "version": None,  "latest": latest,
+                    "note": "尚未安裝"}
+        if installed in ("installed", "unknown"):
+            return {"installed": True,  "version": "已安裝", "latest": latest,
+                    "note": "已安裝（版本未知）"}
+        return {"installed": True, "version": installed, "latest": latest,
+                "note": f"Obsidian {installed}"}
+    except Exception as e:
+        return {"installed": False, "version": None, "latest": None, "note": str(e)}
 
 
 # ── Obsidian 偵測與安裝 ───────────────────────────────────────────────────
