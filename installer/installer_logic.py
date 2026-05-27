@@ -973,30 +973,74 @@ def write_launch_panel_vbs() -> dict:
 # ── I-6：完整安裝流程 ────────────────────────────────────────────────────
 
 def run_full_setup(vault_path: str, token: str, email: str,
-                   gpt_names: list | None = None) -> dict:
+                   gpt_names: list | None = None,
+                   step_cb=None) -> dict:
     """
-    完整安裝流程：
-      1. 部署 Node 檔案（解壓至 INSTALL_DIR）
-      2. 建立 venv + pip install
-      3. 初始化 Agent Vault 資料夾
-      4. 寫 .env
-      5. 寫 launch-panel.vbs
-      6. 安裝排程工作
-      7. 建立桌面捷徑
+    完整安裝流程（7 步）。
+    step_cb(fitem_id, status, label)：每步開始或完成時回呼，
+      status = "running" | "ok" | "error"
     """
     steps: dict = {}
 
-    steps["deploy"]     = deploy_node_files()
-    steps["venv"]       = install_requirements_venv()
-    steps["vault_init"] = (
-        initialize_agent_vaults(vault_path, gpt_names)
-        if gpt_names else {"ok": True, "note": "無 GPT 設定，跳過"}
-    )
-    steps["env"]        = write_env(vault_path, token, email,
-                                    init_agents=",".join(gpt_names or []))
-    steps["vbs"]        = write_launch_panel_vbs()
-    steps["tasks"]      = install_scheduled_tasks()
-    steps["shortcut"]   = create_desktop_shortcut()
+    def notify(fitem_id: str, status: str, label: str):
+        if step_cb:
+            try:
+                step_cb(fitem_id, status, label)
+            except Exception:
+                pass
 
-    all_ok = all(v["ok"] for v in steps.values())
+    def run_step(key, fitem_id, label, fn, *args, **kwargs):
+        notify(fitem_id, "running", label)
+        try:
+            r = fn(*args, **kwargs)
+        except Exception as e:
+            r = {"ok": False, "note": str(e)}
+        steps[key] = r
+        notify(fitem_id, "ok" if r.get("ok") else "error", label)
+        return r
+
+    run_step("deploy",     "deploy",      "Node 檔案部署",
+             deploy_node_files)
+
+    run_step("venv",       "venv",        "Python 套件安裝（venv）",
+             install_requirements_venv)
+
+    if gpt_names:
+        run_step("vault_init", "vault-init", "Agent Vault 初始化",
+                 initialize_agent_vaults, vault_path, gpt_names)
+    else:
+        steps["vault_init"] = {"ok": True, "note": "無 GPT 設定，跳過"}
+        notify("vault-init", "ok", "Agent Vault 初始化")
+
+    run_step("env",        "env",         "環境設定檔（.env）",
+             write_env, vault_path, token, email,
+             init_agents=",".join(gpt_names or []))
+
+    # VBS 不佔 UI 項目，靜默跑
+    try:
+        steps["vbs"] = write_launch_panel_vbs()
+    except Exception as e:
+        steps["vbs"] = {"ok": False, "note": str(e)}
+
+    # 排程工作（兩個子項目）
+    notify("node-task",  "running", "PAOS-Node 排程工作")
+    notify("panel-task", "running", "PAOS-Node-控制台 排程工作")
+    try:
+        tr = install_scheduled_tasks()
+    except Exception as e:
+        tr = {"ok": False, "tasks": {
+            "PAOS-Node":        {"ok": False, "note": str(e)},
+            "PAOS-Node-控制台": {"ok": False, "note": str(e)},
+        }}
+    steps["tasks"] = tr
+    node_ok  = tr.get("tasks", {}).get("PAOS-Node",        {}).get("ok", False)
+    panel_ok = tr.get("tasks", {}).get("PAOS-Node-控制台", {}).get("ok", False)
+    notify("node-task",  "ok" if node_ok  else "error", "PAOS-Node 排程工作")
+    notify("panel-task", "ok" if panel_ok else "error", "PAOS-Node-控制台 排程工作")
+
+    run_step("shortcut",  "shortcut",    "桌面捷徑",
+             create_desktop_shortcut)
+
+    critical = ("deploy", "venv", "env", "tasks", "shortcut")
+    all_ok = all(steps.get(k, {}).get("ok") for k in critical)
     return {"ok": all_ok, "steps": steps}

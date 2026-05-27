@@ -517,9 +517,27 @@ function enterStep5() {
 // ── Step 6：完成安裝 ──────────────────────────────────────────────
 function setFItem(id, ok, text) {
   const el = $(`#${id}`);
-  el.classList.remove("ok", "error");
+  if (!el) return;
+  el.classList.remove("ok", "error", "running");
   el.classList.add(ok ? "ok" : "error");
   el.textContent = (ok ? "✅ " : "❌ ") + text;
+}
+
+/** 由 Python evaluate_js 即時呼叫，更新單一步驟狀態 */
+function updateStepFromPython(fitemId, status, label) {
+  const el = document.getElementById(fitemId);
+  if (!el) return;
+  el.classList.remove("ok", "error", "running");
+  if (status === "running") {
+    el.className = "finish-item running";
+    el.textContent = "⚙️ " + label + "（進行中…）";
+  } else if (status === "ok") {
+    el.className = "finish-item ok";
+    el.textContent = "✅ " + label;
+  } else {
+    el.className = "finish-item error";
+    el.textContent = "❌ " + label;
+  }
 }
 
 function enterStep6() {
@@ -578,7 +596,8 @@ function enterStep6() {
     btnFinish.disabled = false;
   }).catch(e => {
     $("#finish-note").hidden = false;
-    $("#finish-error-detail").textContent = String(e);
+    $("#finish-error-detail").textContent =
+      e?.message || String(e) || "未知錯誤（Promise rejected）";
     btnFinish.disabled = false;
   });
 }

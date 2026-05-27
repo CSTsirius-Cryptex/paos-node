@@ -231,8 +231,9 @@ html, body {
   border-radius: var(--radius); font-size: 13px;
   transition: all .2s;
 }
-.finish-item.ok    { background: #f0fdf4; border-color: var(--green); color: #15803d; }
-.finish-item.error { background: #fef2f2; border-color: var(--red);   color: var(--red); }
+.finish-item.ok      { background: #f0fdf4; border-color: var(--green);  color: #15803d; }
+.finish-item.error   { background: #fef2f2; border-color: var(--red);    color: var(--red); }
+.finish-item.running { background: var(--purple-light); border-color: var(--purple); color: var(--purple); }
 
 .finish-note {
   background: #fffbeb; border: 1px solid #fde68a;

@@ -133,9 +133,39 @@ class InstallerAPI:
     # ── Step 6：完整安裝 ──
     def run_setup(self, vault_path: str, token: str, email: str,
                   gpt_names=None):
-        return logic.run_full_setup(
-            vault_path, token, email,
-            gpt_names=list(gpt_names) if gpt_names else None,
+        import json as _json
+        result_holder: dict = {}
+        done = threading.Event()
+
+        def step_cb(fitem_id: str, status: str, label: str):
+            """每步完成時，透過 evaluate_js 即時推送到前端。"""
+            try:
+                js = (
+                    f"updateStepFromPython("
+                    f"{_json.dumps('fitem-' + fitem_id)},"
+                    f"{_json.dumps(status)},"
+                    f"{_json.dumps(label)})"
+                )
+                window.evaluate_js(js)
+            except Exception:
+                pass
+
+        def run():
+            try:
+                result_holder["result"] = logic.run_full_setup(
+                    vault_path, token, email,
+                    gpt_names=list(gpt_names) if gpt_names else None,
+                    step_cb=step_cb,
+                )
+            except Exception as ex:
+                result_holder["result"] = {"ok": False, "note": f"內部錯誤：{ex}"}
+            done.set()
+
+        threading.Thread(target=run, daemon=True).start()
+        done.wait(timeout=900)   # 最多等 15 分鐘（pip install 可能較慢）
+        return result_holder.get(
+            "result",
+            {"ok": False, "note": "安裝逾時（超過 15 分鐘），請重試或手動完成剩餘步驟"},
         )
 
     # ── 通用 ──
