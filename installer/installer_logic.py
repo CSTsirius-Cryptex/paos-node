@@ -141,12 +141,26 @@ def check_environment() -> dict:
         latest_info = _get_latest_github_release("obsidianmd", "obsidian-releases")
         latest = latest_info.get("version") if latest_info["ok"] else None
 
+        def _ver_main(v: str) -> str:
+            """取主版號前三節（去 leading zeros），用於比較。"""
+            parts = v.split(".")
+            try:
+                return ".".join(str(int(p)) for p in parts[:3] if p.isdigit())
+            except Exception:
+                return v
+
         if not installed:
             result["obsidian"] = {
                 "ok": False, "installed": None, "latest": latest,
                 "note": "尚未安裝 Obsidian",
             }
-        elif latest and installed != latest:
+        elif installed == "installed":
+            # 偵測到已安裝但取不到版本（Squirrel app）
+            result["obsidian"] = {
+                "ok": True, "installed": "已安裝", "latest": latest,
+                "note": f"Obsidian 已安裝（版本未知，如遇問題請確認是最新版）",
+            }
+        elif latest and _ver_main(installed) != _ver_main(latest):
             result["obsidian"] = {
                 "ok": False, "installed": installed, "latest": latest,
                 "note": f"版本過舊（{installed}），需更新至 {latest}",
@@ -177,9 +191,17 @@ def check_environment() -> dict:
 # ── Obsidian 偵測與安裝 ───────────────────────────────────────────────────
 
 def _get_obsidian_installed_version() -> str | None:
-    """從 Windows 登錄檔取得已安裝的 Obsidian 版本號。"""
+    """
+    偵測已安裝的 Obsidian 版本號。
+    三道防線：
+      1. 直接路徑（key name = "Obsidian"）
+      2. 列舉所有 Uninstall 子鍵，找 DisplayName 含 "Obsidian"
+      3. 檔案系統（%LOCALAPPDATA%\\Obsidian\\Obsidian.exe）
+    """
     try:
         import winreg
+
+        # ── 方法 1：直接路徑 ──
         for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
             for sub in (
                 r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Obsidian",
@@ -189,15 +211,76 @@ def _get_obsidian_installed_version() -> str | None:
                     with winreg.OpenKey(hive, sub) as k:
                         v, _ = winreg.QueryValueEx(k, "DisplayVersion")
                         return str(v)
-                except FileNotFoundError:
+                except (FileNotFoundError, OSError):
                     continue
+
+        # ── 方法 2：列舉所有 Uninstall 子鍵 ──
+        for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
+            for base in (
+                r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
+                r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall",
+            ):
+                try:
+                    with winreg.OpenKey(hive, base) as parent:
+                        idx = 0
+                        while True:
+                            try:
+                                subkey_name = winreg.EnumKey(parent, idx)
+                                idx += 1
+                                try:
+                                    with winreg.OpenKey(parent, subkey_name) as k:
+                                        try:
+                                            name, _ = winreg.QueryValueEx(k, "DisplayName")
+                                            if "obsidian" in str(name).lower():
+                                                try:
+                                                    ver, _ = winreg.QueryValueEx(k, "DisplayVersion")
+                                                    return str(ver)
+                                                except (FileNotFoundError, OSError):
+                                                    return "installed"
+                                        except (FileNotFoundError, OSError):
+                                            pass
+                                except (FileNotFoundError, OSError):
+                                    pass
+                            except OSError:
+                                break  # EnumKey 結束
+                except (FileNotFoundError, OSError):
+                    continue
+
     except Exception:
         pass
+
+    # ── 方法 3：檔案系統 ──
+    try:
+        candidates = [
+            Path(os.environ.get("LOCALAPPDATA", "")) / "Obsidian" / "Obsidian.exe",
+            Path(os.environ.get("PROGRAMFILES", "")) / "Obsidian" / "Obsidian.exe",
+            Path(os.environ.get("PROGRAMFILES(X86)", "")) / "Obsidian" / "Obsidian.exe",
+        ]
+        for exe in candidates:
+            if exe.exists():
+                # 嘗試從 package.json 讀版本
+                pkg = exe.parent / "resources" / "app" / "package.json"
+                if pkg.exists():
+                    import json
+                    try:
+                        data = json.loads(pkg.read_text(encoding="utf-8"))
+                        ver = data.get("version")
+                        if ver:
+                            return str(ver)
+                    except Exception:
+                        pass
+                return "installed"  # 確認存在但取不到版本
+    except Exception:
+        pass
+
     return None
 
 
 def download_obsidian(progress_cb=None) -> dict:
-    """從 GitHub Releases 下載並安裝最新版 Obsidian（NSIS 靜默安裝）。"""
+    """從 GitHub Releases 下載並安裝最新版 Obsidian。
+    支援 NSIS（/S）與 Squirrel（--silent）兩種安裝程式。
+    安裝程式可能非同步，會輪詢 registry 確認完成。
+    """
     if progress_cb:
         progress_cb(5, "查詢 Obsidian 最新版本…")
 
@@ -205,32 +288,80 @@ def download_obsidian(progress_cb=None) -> dict:
     if not release["ok"]:
         return {"ok": False, "note": f"無法取得版本資訊：{release['note']}"}
 
-    # 找 Windows .exe 安裝檔
+    # 找 Windows 64-bit .exe 安裝檔（排除 arm64）
     win_asset = next(
         (a for a in release["assets"]
-         if a["name"].lower().endswith(".exe") and "arm" not in a["name"].lower()),
+         if a["name"].lower().endswith(".exe")
+         and "arm" not in a["name"].lower()
+         and "win" not in a["name"].lower().replace("windows", "")  # 避免誤排
+         ),
         None,
     )
+    # 更寬鬆的備用搜尋
     if not win_asset:
-        return {"ok": False, "note": "找不到 Windows 安裝檔"}
+        win_asset = next(
+            (a for a in release["assets"]
+             if a["name"].lower().endswith(".exe") and "arm" not in a["name"].lower()),
+            None,
+        )
+    if not win_asset:
+        return {"ok": False, "note": "找不到 Windows 安裝檔（請手動下載安裝）"}
 
     if progress_cb:
-        progress_cb(10, f"下載 Obsidian {release['version']}…")
+        progress_cb(10, f"下載 Obsidian {release['version']}（{win_asset['name']}）…")
 
     tmp = Path(tempfile.mktemp(suffix=".exe"))
     try:
-        _download_with_progress(win_asset["url"], tmp, progress_cb, 10, 85)
+        _download_with_progress(win_asset["url"], tmp, progress_cb, 10, 82)
 
         if progress_cb:
-            progress_cb(87, "安裝 Obsidian（靜默模式）…")
+            progress_cb(84, "執行安裝程式…")
 
-        r = subprocess.run([str(tmp), "/S"], capture_output=True, timeout=180)
-        if r.returncode != 0:
-            return {"ok": False, "note": f"安裝程式回傳 {r.returncode}"}
+        # 嘗試 NSIS 靜默安裝（/S），許多 Electron app 支援
+        r = subprocess.run(
+            [str(tmp), "/S"],
+            capture_output=True,
+            timeout=240,
+            creationflags=subprocess.CREATE_NO_WINDOW,
+        )
+
+        # 若 NSIS 失敗（exit code != 0 且非 "already running"），嘗試 --silent
+        if r.returncode not in (0, 1, 2):
+            r2 = subprocess.run(
+                [str(tmp), "--silent"],
+                capture_output=True,
+                timeout=240,
+                creationflags=subprocess.CREATE_NO_WINDOW,
+            )
+            if r2.returncode not in (0, 1, 2):
+                return {"ok": False, "note": f"安裝程式失敗（{r2.returncode}）"}
+
+        # 部分安裝程式（Squirrel）是非同步的，需輪詢直到偵測到已安裝
+        if progress_cb:
+            progress_cb(88, "等待安裝完成…")
+
+        for i in range(30):   # 最多等 30 秒
+            ver = _get_obsidian_installed_version()
+            if ver:
+                pct = min(90 + i, 99)
+                if progress_cb:
+                    progress_cb(pct, f"偵測到 Obsidian {ver}，安裝完成！")
+                break
+            time.sleep(1)
+        else:
+            # 仍偵測不到——可能是靜默安裝不支援；嘗試告知使用者
+            return {
+                "ok": False,
+                "note": (
+                    "安裝程式已執行，但偵測不到 Obsidian。\n"
+                    "請手動從 https://obsidian.md/download 安裝後點「重新檢查」。"
+                ),
+            }
 
         if progress_cb:
-            progress_cb(100, f"Obsidian {release['version']} 安裝完成！")
-        return {"ok": True, "version": release["version"]}
+            progress_cb(100, f"Obsidian 安裝完成！")
+        return {"ok": True, "version": _get_obsidian_installed_version() or release["version"]}
+
     except Exception as e:
         return {"ok": False, "note": str(e)}
     finally:
