@@ -14,7 +14,7 @@
     <div class="inst-title">Node 安裝精靈</div>
   </header>
 
-  <!-- 步驟指示器 -->
+  <!-- 步驟指示器 (6 步) -->
   <nav class="steps-nav">
     <div class="step-item active" data-step="1">
       <div class="step-circle">1</div>
@@ -23,21 +23,26 @@
     <div class="step-connector"></div>
     <div class="step-item" data-step="2">
       <div class="step-circle">2</div>
-      <div class="step-label">記憶庫</div>
+      <div class="step-label">安裝位置</div>
     </div>
     <div class="step-connector"></div>
     <div class="step-item" data-step="3">
       <div class="step-circle">3</div>
-      <div class="step-label">帳號登入</div>
+      <div class="step-label">記憶庫</div>
     </div>
     <div class="step-connector"></div>
     <div class="step-item" data-step="4">
       <div class="step-circle">4</div>
-      <div class="step-label">建立通道</div>
+      <div class="step-label">帳號登入</div>
     </div>
     <div class="step-connector"></div>
     <div class="step-item" data-step="5">
       <div class="step-circle">5</div>
+      <div class="step-label">建立通道</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="6">
+      <div class="step-circle">6</div>
       <div class="step-label">完成</div>
     </div>
   </nav>
@@ -48,7 +53,7 @@
     <!-- ── Step 1：環境確認 ── -->
     <section class="inst-step active" id="step-1">
       <h2 class="step-heading">歡迎使用 PAOS Node 安裝精靈</h2>
-      <p class="step-desc">開始前先確認你的電腦環境符合需求。</p>
+      <p class="step-desc">開始前先確認你的電腦環境符合需求。所有項目都必須是最新版本才能繼續。</p>
 
       <div class="env-checks" id="env-checks">
         <div class="env-item loading" id="env-python">
@@ -61,44 +66,120 @@
           <span class="env-name">cloudflared</span>
           <span class="env-detail">檢查中…</span>
         </div>
+        <div class="env-item loading" id="env-obsidian">
+          <span class="env-icon">⏳</span>
+          <span class="env-name">Obsidian</span>
+          <span class="env-detail">檢查中…</span>
+        </div>
         <div class="env-item loading" id="env-port">
           <span class="env-icon">⏳</span>
           <span class="env-name">Port 3100</span>
-          <span class="env-detail">檢查中…</span>
-        </div>
-        <div class="env-item loading" id="env-dir">
-          <span class="env-icon">⏳</span>
-          <span class="env-name">安裝目錄</span>
           <span class="env-detail">檢查中…</span>
         </div>
       </div>
 
       <div class="env-hint" id="env-hint" hidden></div>
 
-      <div class="python-guide" id="python-guide" hidden>
-        <p>⚠️ 請先安裝 Python：</p>
-        <ol>
-          <li>前往 <a class="ext-link" onclick="openExternal('https://www.python.org/downloads/')">Python 官方下載頁面</a></li>
-          <li>下載 Python 3.10 以上版本（Windows installer）</li>
-          <li>安裝時務必勾選「<strong>Add Python to PATH</strong>」</li>
-          <li>安裝完成後點「重新檢查」</li>
-        </ol>
+      <!-- Python 安裝引導 -->
+      <div class="install-guide" id="python-guide" hidden>
+        <p>⚠️ 需要安裝 Python：</p>
+        <div class="cf-actions">
+          <button class="btn-primary" id="btn-auto-install-py">⬇ 自動安裝 Python（推薦）</button>
+          <button class="btn-ghost" id="btn-recheck-py">重新檢查</button>
+        </div>
+        <div class="cf-progress" id="py-progress" hidden>
+          <div class="cf-progress-bar-track">
+            <div class="cf-progress-bar" id="py-progress-bar"></div>
+          </div>
+          <span class="cf-progress-label" id="py-progress-label">準備中…</span>
+        </div>
+        <details class="cf-manual">
+          <summary>手動安裝說明</summary>
+          <ol>
+            <li>前往 <a class="ext-link" onclick="openExternal('https://www.python.org/downloads/')">Python 官方下載頁面</a></li>
+            <li>下載 Python 3.10 以上版本（Windows installer）</li>
+            <li>安裝時務必勾選「<strong>Add Python to PATH</strong>」</li>
+            <li>安裝完成後點「重新檢查」</li>
+          </ol>
+        </details>
       </div>
 
-      <div class="cloudflared-guide" id="cloudflared-guide" hidden>
-        <p>⚠️ 請先安裝 cloudflared：</p>
-        <ol>
-          <li>前往 <a class="ext-link" onclick="openExternal('https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/')">Cloudflare 官方下載頁面</a></li>
-          <li>下載 <strong>Windows 64-bit</strong> 版本（<code>cloudflared-windows-amd64.exe</code>）</li>
-          <li>將檔案改名為 <code>cloudflared.exe</code>，放到 <code>C:\Windows\System32\</code></li>
-          <li>安裝完成後點「重新檢查」</li>
-        </ol>
-        <button class="btn-secondary" id="btn-recheck">重新檢查</button>
+      <!-- cloudflared 安裝引導 -->
+      <div class="install-guide" id="cloudflared-guide" hidden>
+        <p>⚠️ 需要安裝 cloudflared：</p>
+        <div class="cf-actions">
+          <button class="btn-primary" id="btn-auto-install-cf">⬇ 自動下載安裝（推薦）</button>
+          <button class="btn-ghost" id="btn-recheck-cf">重新檢查</button>
+        </div>
+        <div class="cf-progress" id="cf-progress" hidden>
+          <div class="cf-progress-bar-track">
+            <div class="cf-progress-bar" id="cf-progress-bar"></div>
+          </div>
+          <span class="cf-progress-label" id="cf-progress-label">準備中…</span>
+        </div>
+        <details class="cf-manual">
+          <summary>手動安裝說明</summary>
+          <ol>
+            <li>前往 <a class="ext-link" onclick="openExternal('https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/')">Cloudflare 官方下載頁面</a></li>
+            <li>下載 <strong>Windows 64-bit</strong>（<code>cloudflared-windows-amd64.exe</code>）</li>
+            <li>將檔案放到 <code>C:\Windows\System32\</code> 或任何 PATH 目錄</li>
+            <li>安裝完成後點「重新檢查」</li>
+          </ol>
+        </details>
+      </div>
+
+      <!-- Obsidian 安裝引導 -->
+      <div class="install-guide" id="obsidian-guide" hidden>
+        <p>⚠️ 需要安裝或更新 Obsidian（必要）：</p>
+        <div class="cf-actions">
+          <button class="btn-primary" id="btn-auto-install-ob">⬇ 自動下載安裝（推薦）</button>
+          <button class="btn-ghost" id="btn-recheck-ob">重新檢查</button>
+        </div>
+        <div class="cf-progress" id="ob-progress" hidden>
+          <div class="cf-progress-bar-track">
+            <div class="cf-progress-bar" id="ob-progress-bar"></div>
+          </div>
+          <span class="cf-progress-label" id="ob-progress-label">準備中…</span>
+        </div>
+        <details class="cf-manual">
+          <summary>手動安裝說明</summary>
+          <ol>
+            <li>前往 <a class="ext-link" onclick="openExternal('https://obsidian.md/download')">Obsidian 官方下載頁面</a></li>
+            <li>下載並安裝最新版 Windows 安裝程式</li>
+            <li>安裝完成後點「重新檢查」</li>
+          </ol>
+        </details>
       </div>
     </section>
 
-    <!-- ── Step 2：記憶庫路徑 ── -->
+    <!-- ── Step 2：安裝目錄 ── -->
     <section class="inst-step" id="step-2" hidden>
+      <h2 class="step-heading">選擇安裝位置</h2>
+      <p class="step-desc">PAOS Node 的程式檔案將安裝在此目錄。建議使用預設值。安裝後勿移動此目錄。</p>
+
+      <div class="field-group">
+        <label class="field-label">安裝目錄</label>
+        <div class="field-row">
+          <input type="text" id="install-path" class="field-input" placeholder="正在載入預設路徑…">
+          <button class="btn-secondary" id="btn-install-browse">選擇資料夾</button>
+        </div>
+        <p class="field-hint" id="install-hint"></p>
+      </div>
+
+      <div class="path-preview" id="install-preview" hidden>
+        <div class="path-item">📁 <span id="preview-install-root"></span></div>
+        <div class="path-item">📁 <span id="preview-install-venv"></span> (Python 虛擬環境)</div>
+        <div class="path-item">📁 <span id="preview-install-src"></span> (Node 程式碼)</div>
+      </div>
+
+      <div class="info-box">
+        <span class="info-icon">ℹ️</span>
+        <span>安裝完成後，PAOS Node 會在每次登入 Windows 時自動在背景啟動。如需解除安裝，刪除此資料夾並移除排程工作即可。</span>
+      </div>
+    </section>
+
+    <!-- ── Step 3：記憶庫路徑 ── -->
+    <section class="inst-step" id="step-3" hidden>
       <h2 class="step-heading">設定記憶庫路徑</h2>
       <p class="step-desc">請選擇你的 Obsidian Vault 根目錄。PAOS Node 會將對話記憶、筆記和工作任務存放於此。</p>
 
@@ -118,8 +199,8 @@
       </div>
     </section>
 
-    <!-- ── Step 3：帳號登入 ── -->
-    <section class="inst-step" id="step-3" hidden>
+    <!-- ── Step 4：帳號登入 ── -->
+    <section class="inst-step" id="step-4" hidden>
       <h2 class="step-heading">登入 PAOS Central</h2>
       <p class="step-desc">輸入你的 Email，我們會發送一次性驗證碼來確認身份。</p>
 
@@ -155,10 +236,17 @@
           <span id="login-gpt-count"></span>
         </div>
       </div>
+
+      <!-- GPT 助理清單（登入成功後顯示） -->
+      <div class="gpt-list-section" id="gpt-list-section" hidden>
+        <label class="field-label">已授權的 GPT 助理</label>
+        <div class="gpt-list" id="gpt-list"></div>
+        <p class="field-hint" style="margin-top:4px;">安裝完成後，以上助理的記憶空間將自動建立在 Vault 中。</p>
+      </div>
     </section>
 
-    <!-- ── Step 4：建立通道 ── -->
-    <section class="inst-step" id="step-4" hidden>
+    <!-- ── Step 5：建立通道 ── -->
+    <section class="inst-step" id="step-5" hidden>
       <h2 class="step-heading">建立安全通道</h2>
       <p class="step-desc">正在建立 cloudflared Quick Tunnel，讓 GPT 助理可以安全連接到你的 Node。</p>
 
@@ -185,12 +273,15 @@
       <p class="field-hint" id="tunnel-hint"></p>
     </section>
 
-    <!-- ── Step 5：安裝完成 ── -->
-    <section class="inst-step" id="step-5" hidden>
+    <!-- ── Step 6：安裝完成 ── -->
+    <section class="inst-step" id="step-6" hidden>
       <h2 class="step-heading">🎉 安裝完成！</h2>
-      <p class="step-desc">PAOS Node 已成功安裝並設定完成。</p>
+      <p class="step-desc">PAOS Node 正在完成最後設定，請稍候…</p>
 
       <div class="finish-checklist" id="finish-checklist">
+        <div class="finish-item" id="fitem-deploy">⏳ Node 檔案部署</div>
+        <div class="finish-item" id="fitem-venv">⏳ Python 套件安裝（venv）</div>
+        <div class="finish-item" id="fitem-vault-init">⏳ Agent Vault 初始化</div>
         <div class="finish-item" id="fitem-env">⏳ 環境設定檔（.env）</div>
         <div class="finish-item" id="fitem-node-task">⏳ PAOS-Node 排程工作</div>
         <div class="finish-item" id="fitem-panel-task">⏳ PAOS-Node-控制台 排程工作</div>
@@ -202,8 +293,10 @@
         <pre id="finish-error-detail"></pre>
       </div>
 
-      <p class="finish-hint">重新登入 Windows 後，PAOS Node 會自動在背景啟動。<br>
-         點下方按鈕立即開啟控制台。</p>
+      <p class="finish-hint" id="finish-hint" hidden>
+        重新登入 Windows 後，PAOS Node 會自動在背景啟動。<br>
+        點下方按鈕立即開啟控制台。
+      </p>
     </section>
 
   </main>

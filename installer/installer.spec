@@ -1,17 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
 """
-installer.spec — PAOS Node 安裝精靈 PyInstaller 打包配置 (v2)
+installer.spec — PAOS Node 安裝精靈 PyInstaller 打包配置 (v3)
 
 打包指令（在 installer/ 目錄下執行）：
     cd D:\\Claude\\paos-node\\installer
-    pyinstaller installer.spec
+    pyinstaller installer.spec --distpath=..
 
-輸出：../paos-installer.exe（直接輸出到 paos-node 根目錄，與 start.py 同層）
+輸出：../paos-installer.exe（直接輸出到 paos-node 根目錄）
 
 frozen 行為：
   - sys.executable = paos-installer.exe 所在路徑
-  - installer_logic.INSTALL_DIR = Path(sys.executable).parent  → paos-node 根目錄
-  - 靜態資源解壓到 sys._MEIPASS/static/
+  - installer_logic.INSTALL_DIR = %LOCALAPPDATA%\\PAOS-Node\\（使用者可選）
+  - 安裝精靈 UI 解壓到 sys._MEIPASS/static/
+  - Node 原始碼打包到 sys._MEIPASS/node/，安裝時解壓到 INSTALL_DIR
   - pywebview 優先 edgechromium（Edge WebView2，Windows 10/11 內建）
     fallback：winforms（pythonnet + .NET）
 """
@@ -20,12 +21,22 @@ from pathlib import Path
 from PyInstaller.utils.hooks import collect_all
 
 # ── 路徑 ─────────────────────────────────────────────────────────────────────
-HERE   = Path(SPECPATH)          # installer/ 目錄（spec 所在位置）
-STATIC = HERE / "static"         # installer/static/  (HTML/CSS/JS)
-DIST   = HERE.parent             # 輸出到 paos-node 根目錄
+HERE      = Path(SPECPATH)           # installer/ 目錄（spec 所在位置）
+STATIC    = HERE / "static"          # installer/static/  (安裝精靈 HTML/CSS/JS)
+NODE_ROOT = HERE.parent              # paos-node 根目錄（node 原始碼位置）
 
 # ── 收集 pywebview 全部資產（templates、js bridge、多 backend 的附加檔案）────
 webview_datas, webview_binaries, webview_hiddenimports = collect_all("webview")
+
+# ── Node 原始碼資料（部署到使用者的 INSTALL_DIR）─────────────────────────────
+node_datas = [
+    (str(NODE_ROOT / "start.py"),         "node"),
+    (str(NODE_ROOT / "panel_app.py"),     "node"),
+    (str(NODE_ROOT / "requirements.txt"), "node"),
+    (str(NODE_ROOT / "cp_config.json"),   "node"),
+    (str(NODE_ROOT / "src"),              "node/src"),      # FastAPI 後端
+    (str(NODE_ROOT / "static"),           "node/static"),   # 控制台 UI
+]
 
 # ── Analysis ─────────────────────────────────────────────────────────────────
 a = Analysis(
@@ -34,6 +45,7 @@ a = Analysis(
     binaries=webview_binaries,
     datas=[
         (str(STATIC), "static"),     # 安裝精靈 UI → _MEIPASS/static/
+        *node_datas,                 # Node 原始碼  → _MEIPASS/node/
         *webview_datas,              # pywebview 內建資源
     ],
     hiddenimports=[
